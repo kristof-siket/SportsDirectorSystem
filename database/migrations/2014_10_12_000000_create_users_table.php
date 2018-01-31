@@ -15,23 +15,27 @@ class CreateUsersTable extends Migration
     {
         if(!Schema::hasTable('users')) {
             Schema::create('users', function (Blueprint $table) {
-                $table->increments('id');
-                $table->string('name');
+                $table->increments('id')->unsigned();
                 $table->string('email')->unique();
                 $table->string('password');
+
+                $table->string('first_name');
+                $table->string('last_name');
+                $table->date('date_of_birth')->nullable();
+                $table->string('location')->nullable();
+
                 $table->rememberToken();
                 $table->timestamps();
             });
         }
 
-        Schema::table('users', function (Blueprint $table) {
-           $table->string('first_name');
-           $table->string('last_name');
-           $table->date('date_of_birth');
-           $table->string('location')->nullable();
-           $table->integer('role_id')->unsigned();
-           $table->integer('team_id')->unsigned();
-        });
+        if (Schema::hasTable('teams')) {
+            Schema::table('users', function (Blueprint $table) {
+                $table->integer('team_id')->unsigned();
+
+                $table->foreign('team_id')->references('team_id')->on('teams');
+            });
+        }
     }
 
     /**

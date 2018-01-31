@@ -14,7 +14,22 @@ class CreateResultsTable extends Migration
     public function up()
     {
         Schema::create('results', function (Blueprint $table) {
-            $table->increments('id');
+            $table->increments('result_id')->unsigned();
+            $table->boolean('disqualified')->nullable();
+            $table->integer('result_time');
+
+            $table->integer('result_athlete')->unsigned();
+            $table->integer('result_competition')->unsigned();
+            $table->integer('result_distance')->unsigned();
+            $table->integer('result_sport')->unsigned();
+            $table->integer('result_multisport')->unsigned()->nullable();
+
+            $table->foreign('result_athlete')->references('id')->on('users');
+            $table->foreign('result_competition')->references('comp_id')->on('competitions');
+            $table->foreign('result_distance')->references('distance_id')->on('distances');
+            $table->foreign('result_sport')->references('sport_id')->on('sports');
+            $table->foreign('result_multisport')->references('sport_id')->on('sports');
+
             $table->timestamps();
         });
     }

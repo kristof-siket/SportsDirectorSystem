@@ -14,7 +14,16 @@ class CreateDistancesTable extends Migration
     public function up()
     {
         Schema::create('distances', function (Blueprint $table) {
-            $table->increments('id');
+            $table->increments('distance_id')->unsigned();
+            $table->string('distance_name')->nullable();
+            $table->float('distance_kilometers')->unsigned();
+
+            $table->integer('sport_id')->unsigned();
+            $table->integer('multi_id')->unsigned()->nullable(); // ha multisporthoz tartozik
+
+            $table->foreign('sport_id')->references('sport_id')->on('sports');
+            $table->foreign('multi_id')->references('sport_id')->on('sports');
+
             $table->timestamps();
         });
     }
