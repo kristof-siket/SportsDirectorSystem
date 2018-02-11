@@ -11,4 +11,24 @@ class Sport extends Model
             'multisport',
             'sport_desc'
     ];
+
+    public function competitions()
+    {
+        return $this->hasMany('App\Competition', 'comp_sport');
+    }
+
+    public function results()
+    {
+        return $this->hasMany('App\Result', 'result_sport');
+    }
+
+    public function distances()
+    {
+        return $this->hasMany('App\Distance', 'distance_sport');
+    }
+
+    public function trainingplans()
+    {
+        return $this->hasMany('App\TrainingPlan', 'tp_sport');
+    }
 }

@@ -10,4 +10,9 @@ class Level extends Model
         'level_num',
         'level_desc'
     ];
+
+    public function trainingplans()
+    {
+        $this->hasMany('App\TrainingPlan', 'tp_level');
+    }
 }

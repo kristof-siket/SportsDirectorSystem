@@ -32,4 +32,19 @@ class User extends Authenticatable
     protected $hidden = [
         'password', 'remember_token',
     ];
+
+    public function team()
+    {
+        return $this->belongsTo('App\Team'); // it works -> naming convention!
+    }
+
+    public function results()
+    {
+        return $this->hasMany('App/Result', 'result_athlete');
+    }
+
+    public function trainingplans()
+    {
+        return $this->hasMany('App/TrainingPlan', 'tp_creator');
+    }
 }

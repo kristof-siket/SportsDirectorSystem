@@ -1,6 +1,5 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
@@ -13,13 +12,13 @@ class CreateDistancesTable extends Migration
      */
     public function up()
     {
-        Schema::create('distances', function (Blueprint $table) {
+            Schema::create('distances', function (Blueprint $table) {
             $table->increments('distance_id')->unsigned();
             $table->string('distance_name')->nullable();
             $table->float('distance_kilometers')->unsigned();
 
             $table->integer('sport_id')->unsigned();
-            $table->integer('multi_id')->unsigned()->nullable(); // ha multisporthoz tartozik
+            $table->integer('multi_id')->unsigned()->nullable(); // if sport_id references a multisport, this is the id of the "part-sport"
 
             $table->foreign('sport_id')->references('sport_id')->on('sports');
             $table->foreign('multi_id')->references('sport_id')->on('sports');
