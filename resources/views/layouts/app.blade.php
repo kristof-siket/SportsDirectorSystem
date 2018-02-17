@@ -24,8 +24,7 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    <span style="font-size:30px;cursor:pointer" onclick="openNav()">&#9776; menu</span>
-                    <a class="navbar-brand" href="#">SportsDirector</a>
+                    <span class="navbar-brand" style="font-size:30px;cursor:pointer" onclick="openNav()">&#9776; menu</span>
                 </div>
                 <div id="navbar" class="navbar-collapse collapse">
                     <form class="navbar-form navbar-right">
