@@ -14,42 +14,45 @@
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
 </head>
 <body background="{{ asset('images/background.jpeg') }}">
-    <nav class="navbar navbar-inverse navbar-fixed-top">
-        <div class="container">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <a class="navbar-brand" href="#">SportsDirector</a>
+    <div id="main">
+        <nav class="navbar navbar-inverse navbar-fixed-top">
+            <div class="container">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <span style="font-size:30px;cursor:pointer" onclick="openNav()">&#9776; menu</span>
+                    <a class="navbar-brand" href="#">SportsDirector</a>
+                </div>
+                <div id="navbar" class="navbar-collapse collapse">
+                    <form class="navbar-form navbar-right">
+                        <div class="form-group">
+                            <input type="text" placeholder="Email" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <input type="password" placeholder="Password" class="form-control">
+                        </div>
+                        <button type="submit" name="submitbutton" value="signin" class="btn btn-success">Sign in</button>
+                        <button type="submit" name="submitbutton" value="register" class="btn btn-info">Register</button>
+                    </form>
+                </div><!--/.navbar-collapse -->
             </div>
-            <div id="navbar" class="navbar-collapse collapse">
-                <form class="navbar-form navbar-right">
-                    <div class="form-group">
-                        <input type="text" placeholder="Email" class="form-control">
-                    </div>
-                    <div class="form-group">
-                        <input type="password" placeholder="Password" class="form-control">
-                    </div>
-                    <button type="submit" name="submitbutton" value="signin" class="btn btn-success">Sign in</button>
-                    <button type="submit" name="submitbutton" value="register" class="btn btn-info">Register</button>
-                </form>
-            </div><!--/.navbar-collapse -->
-        </div>
-    </nav>
+        </nav>
+        @include('menus.hamburger-menu')
+        @yield('primary')
 
-    @yield('primary')
+        <div class="container">
 
-    <div class="container">
+            @yield('content')<hr>
 
-        @yield('content')<hr>
-
-        <footer>
-            <p>&copy; 2016 Company, Inc.</p>
-        </footer>
-    </div> <!-- /container -->
+            <footer>
+                <p>&copy; 2016 Company, Inc.</p>
+            </footer>
+        </div> <!-- /container -->
+    </div>
     <!-- Scripts -->
     <script src="{{ asset('js/app.js') }}"></script>
 </body>
