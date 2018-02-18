@@ -13,12 +13,12 @@ class CompetitionsDistances extends Model
 
     public function competition()
     {
-        return $this->belongsTo('App\Competition');
+        return $this->belongsTo('App\Competition', 'competition_id');
     }
 
     public function distance()
     {
-        return $this->belongsTo('App\Distance');
+        return $this->belongsTo('App\Distance', 'distance_id');
     }
 
     // these two methods work without specifying foreign keys, because of the naming conventions

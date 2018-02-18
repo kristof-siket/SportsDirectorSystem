@@ -25,6 +25,18 @@
             <h4 class="list-group-item-heading">Promoter</h4>
             <p class="list-group-item-text">{!! $competition->promoter->first_name . ' ' . $competition->promoter->last_name !!}</p>
         </a>
+
+        <a href="#" class="list-group-item">
+            <h4 class="list-group-item-heading">Distances</h4>
+            <ul class="list-group">
+                @foreach($competition->distances as $distance)
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        {!! $distance->distance->distance_name !!}
+                        <span class="badge badge-primary badge-pill">0</span>
+                    </li>
+                @endforeach
+            </ul>
+        </a>
     </div>
 
 </div>
