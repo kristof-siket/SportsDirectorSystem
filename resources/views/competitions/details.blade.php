@@ -32,7 +32,7 @@
                 @foreach($competition->distances as $distance)
                     <li class="list-group-item d-flex justify-content-between align-items-center">
                         {!! $distance->distance->distance_name !!}
-                        <span class="badge badge-primary badge-pill">0</span>
+                        <span class="badge badge-primary badge-pill">{!! count($distance->competition->results->where('result_distance', $distance->distance_id)) !!}</span>
                     </li>
                 @endforeach
             </ul>
