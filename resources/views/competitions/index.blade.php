@@ -16,6 +16,7 @@
                     <a href="{!! route('competitions.show', ['comp_id' => $competition->comp_id]) !!}" class="list-group-item">{!! $competition->comp_name !!}</a>
                 @endforeach
             </div>
+            <a href="{{ route('competitions.create') }}" class="btn btn-success">New Event</a>
         </div>
     </div>
 @endsection

@@ -27,7 +27,7 @@ class CompetitionsController extends Controller
      */
     public function create()
     {
-        //
+        return view('competitions.create');
     }
 
     /**
