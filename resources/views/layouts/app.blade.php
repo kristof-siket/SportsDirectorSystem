@@ -12,6 +12,7 @@
 
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/style.css') }}" rel="stylesheet">
 </head>
 <body background="{{ asset('images/background.jpeg') }}">
     <div id="main">
@@ -27,16 +28,18 @@
                     <span class="navbar-brand" style="font-size:30px;cursor:pointer" onclick="openNav()">&#9776; menu</span>
                 </div>
                 <div id="navbar" class="navbar-collapse collapse">
-                    <form class="navbar-form navbar-right">
-                        <div class="form-group">
-                            <input type="text" placeholder="Email" class="form-control">
-                        </div>
-                        <div class="form-group">
-                            <input type="password" placeholder="Password" class="form-control">
-                        </div>
-                        <button type="submit" name="submitbutton" value="signin" class="btn btn-success">Sign in</button>
-                        <button type="submit" name="submitbutton" value="register" class="btn btn-info">Register</button>
-                    </form>
+                    <div class="navbar-form navbar-right">
+                        @if(Auth::check())
+                            <strong>{{ Auth::user()->email }}</strong>
+                            <a href="{{ url('/logout') }}" class="btn btn-danger">Logout</a>
+                            <form id="logout-form" action="{{ url('/logout') }}" method="POST" style="display: none;">
+                                {{ csrf_field() }}
+                            </form>
+                        @else
+                                <a href="{{ route('login') }}"  class="btn btn-success">Sign in</a>
+                                <a href="{{ route('register') }}" class="btn btn-info">Register</a>
+                        @endif
+                    </div>
                 </div><!--/.navbar-collapse -->
             </div>
         </nav>

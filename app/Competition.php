@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Competition extends Model
 {
+    protected $primaryKey = 'comp_id';
+
     protected $fillable = [
         'comp_sport',
         'comp_promoter',

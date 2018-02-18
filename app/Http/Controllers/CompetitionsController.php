@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Competition;
 use Illuminate\Http\Request;
+use Symfony\Component\CssSelector\XPath\Extension\CombinationExtension;
 
 class CompetitionsController extends Controller
 {
@@ -48,7 +49,7 @@ class CompetitionsController extends Controller
      */
     public function show(Competition $competition)
     {
-        //
+        return view('competitions.details', ['competition' => $competition]);
     }
 
     /**

@@ -1,0 +1,10 @@
+/* panel for displaying data */
+.panel-primary>.panel-heading {
+    background-color: #061019;
+    border-color: #061019;
+}
+.panel-primary {
+    border-color: #061019;
+}
+/* end */
+
