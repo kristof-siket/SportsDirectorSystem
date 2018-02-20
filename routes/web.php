@@ -19,6 +19,9 @@ Route::resource('competitions', 'CompetitionsController', ['parameters' => ['id'
 Route::resource('training_plans', 'TrainingPlansController');
 Route::resource('runalyzer', 'RunalyzerController');
 
+Route::get('/competitions/{comp_id}/distances', 'CompetitionsController@addDistances')->name('competitions.addDistances');
+Route::post('/competitions/{comp_id}/savedistances', 'CompetitionsController@storeDistances')->name('competitions.storeDistances');
+
 Auth::routes();
 
 Route::get('/logout', '\App\Http\Controllers\Auth\LoginController@logout');
