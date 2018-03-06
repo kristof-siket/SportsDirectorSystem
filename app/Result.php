@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Result extends Model
 {
+    protected $primaryKey = 'result_id';
+
     protected $fillable = [
         'result_athlete',
         'result_distance',

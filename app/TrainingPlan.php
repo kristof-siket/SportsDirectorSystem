@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class TrainingPlan extends Model
 {
+    protected $primaryKey = 'tp_id';
+
     protected $fillable = [
         'tp_creator',
         'tp_sport',
