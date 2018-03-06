@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Competition;
 use Illuminate\Http\Request;
 
 class PagesController extends Controller
@@ -16,7 +17,8 @@ class PagesController extends Controller
         if (!(\Auth::check())) {
             return redirect('login');
         } else {
-            return view('welcome');
+            $recent_comps = Competition::all()->take(3);
+            return view('welcome', ['recent_comps' => $recent_comps]);
         }
     }
 }

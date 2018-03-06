@@ -58,7 +58,7 @@
 <div id="mySidenav" class="sidenav">
     <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
     <a href="{{ route('welcome') }}">Home</a>
-    <a href="{{ route('home') }}">Dashboard</a>
+    <a href="{{ route('dashboard') }}">Dashboard</a>
     <a href="{{ route('competitions.index') }}">Browse events</a>
     <a href="{{ route('training_plans.index') }}">Training planning</a>
     <a href="{{ route('runalyzer.index') }}">&copy Runalyzer</a>

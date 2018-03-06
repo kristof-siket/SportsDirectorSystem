@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Sport extends Model
 {
+    protected $primaryKey = 'sport_id';
+
     protected $fillable = [
             'sport_name',
             'multisport',
