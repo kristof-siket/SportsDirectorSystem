@@ -10,6 +10,6 @@
     <div class="panel panel-primary">
         <!-- Default panel contents -->
         <div class="panel-heading">Training planning</div>
-        TrainingPlan function is under development, please get back later!
+        <div class="panel-body">TrainingPlan function is under development, please get back later!</div>
     </div>
 @endsection
