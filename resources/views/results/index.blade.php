@@ -12,9 +12,13 @@
         </div>
         <div class="panel-body">
             <div class="list-group">
-                @foreach($results as $result)
-                    <a href="#" class="list-group-item">{!! $result->athlete()->first_name . " " . $result->athlete()->last_name !!}</a>
-                @endforeach
+                @if($results->isEmpty())
+                    <p class="list-group-item list-group-item-warning">There are no participants yet!</p>
+                @else
+                    @foreach($results as $result)
+                        <a href="#" class="list-group-item">{!! $result->athlete->first_name . " " . $result->athlete->last_name !!}</a>
+                    @endforeach
+                @endif
             </div>
         </div>
     </div>

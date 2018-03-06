@@ -13,7 +13,10 @@
         <div class="panel-body">
             <div class="list-group">
                 @foreach($competitions as $competition)
-                    <a href="{!! route('competitions.show', ['comp_id' => $competition->comp_id]) !!}" class="list-group-item">{!! $competition->comp_name !!}</a>
+                    <p class="list-group-item col-md-12">
+                        <a href="{!! route('competitions.show', ['comp_id' => $competition->comp_id]) !!}" class="list-group-item-text">{!! $competition->comp_name !!}</a>
+                        <a href="{!!  route('results.index', ['comp_id' => $competition->comp_id]) !!}" class="btn btn-info col-md-12">See competitors</a>
+                    </p>
                 @endforeach
             </div>
             <a href="{{ route('competitions.create') }}" class="btn btn-success">New Event</a>

@@ -13,9 +13,13 @@ class ResultsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Competition $competition)
+    public function index($comp_id)
     {
-        //
+        $this_results = Result::where('result_competition', $comp_id)
+            ->orderBy('result_time', 'desc')
+            ->get();
+
+        return view('results.index', ['results' => $this_results]);
     }
 
     /**

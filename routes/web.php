@@ -20,6 +20,8 @@ Route::resource('runalyzer', 'RunalyzerController');
 Route::get('/competitions/{comp_id}/distances', 'CompetitionsController@addDistances')->name('competitions.addDistances');
 Route::post('/competitions/{comp_id}/savedistances', 'CompetitionsController@storeDistances')->name('competitions.storeDistances');
 
+Route::get('/results/{comp_id}', 'ResultsController@index')->name('results.index');
+
 Auth::routes();
 
 Route::get('/logout', '\App\Http\Controllers\Auth\LoginController@logout');
@@ -28,4 +30,3 @@ Route::get('/dashboard', 'HomeController@index')->name('dashboard');
 
 Auth::routes();
 
-//Route::get('/home', 'HomeController@index')->name('home');
