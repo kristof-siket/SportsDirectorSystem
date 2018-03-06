@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Competition;
 use App\Result;
 use Illuminate\Http\Request;
 
@@ -12,7 +13,7 @@ class ResultsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Competition $competition)
     {
         //
     }

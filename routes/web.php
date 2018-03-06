@@ -11,9 +11,7 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', 'PagesController@index')->name('welcome');
 
 Route::resource('competitions', 'CompetitionsController', ['parameters' => ['id' => 'comp_id']]);
 Route::resource('training_plans', 'TrainingPlansController');
