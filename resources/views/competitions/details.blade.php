@@ -30,10 +30,12 @@
             <h4 class="list-group-item-heading">Distances</h4>
             <ul class="list-group">
                 @foreach($competition->distances as $distance)
-                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                        {!! $distance->distance->distance_name !!}
-                        <span class="badge badge-primary badge-pill">{!! count($distance->competition->results->where('result_distance', $distance->distance_id)) !!}</span>
-                    </li>
+                    <a href="{{ route('results.enter', ['comp_id' => $competition->comp_id, 'dist_id' => $distance->distance_id]) }}">
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            {!! $distance->distance->distance_name !!}
+                            <span class="badge badge-primary badge-pill">{!! count($distance->competition->results->where('result_distance', $distance->distance_id)) !!}</span>
+                        </li>
+                    </a>
                 @endforeach
             </ul>
         </a>
