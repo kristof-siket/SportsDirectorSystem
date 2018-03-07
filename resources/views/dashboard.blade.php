@@ -15,8 +15,34 @@
                             {{ session('status') }}
                         </div>
                     @endif
+                        <div class="col-md-2">
+                            <div class="panel panel-info">
+                                <div class="panel-heading">Profile settings</div>
+                                <div class="panel-body">
+                                    @foreach($competitions as $competition)
+                                        {!! $competition->comp_name !!}
+                                    @endforeach
+                                    Content
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-8">
+                            <div class="panel panel-info">
+                                <div class="panel-heading">Recent events</div>
+                                <div class="panel-body">
+                                    Content
+                                </div>
+                            </div>
+                        </div>
 
-                    You are logged in!
+                        <div class="col-md-2">
+                            <div class="panel panel-info">
+                                <div class="panel-heading">Training plans</div>
+                                <div class="panel-body">
+                                    Content
+                                </div>
+                            </div>
+                        </div>
                 </div>
             </div>
         </div>

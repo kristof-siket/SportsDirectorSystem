@@ -40,20 +40,24 @@ class ResultsController extends Controller
      */
     public function enter($comp_id, $distance_id)
     {
-        $new_res = Result::create([
-           'disqualified' => 0,
-            'result_time' => 0,
-            'result_athlete' => \Auth::user()->id,
-            'result_competition' => $comp_id,
-            'result_sport' => Competition::find($comp_id)->comp_sport,
-            'result_distance' => $distance_id,
-            'result_multisport' => null // TODO: check if competition sport is a multi-sport
-        ]);
+        if (\Auth::check()) {
+            $new_res = Result::create([
+                'disqualified' => 0,
+                'result_time' => 0,
+                'result_athlete' => \Auth::user()->id,
+                'result_competition' => $comp_id,
+                'result_sport' => Competition::find($comp_id)->comp_sport,
+                'result_distance' => $distance_id,
+                'result_multisport' => null // TODO: check if competition sport is a multi-sport
+            ]);
 
-        if ($new_res) {
-            return redirect()->route('results.index', ['comp_id' => $comp_id]);
+            if ($new_res) {
+                return redirect()->route('results.index', ['comp_id' => $comp_id]);
+            } else {
+                return redirect()->route('results.index', ['comp_id' => $comp_id]);
+            }
         } else {
-            return redirect()->route('results.index', ['comp_id' => $comp_id]);
+            return redirect()->route('login');
         }
         // TODO: flash messages
     }
