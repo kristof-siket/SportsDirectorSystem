@@ -17,7 +17,7 @@ class PagesController extends Controller
         if (!(\Auth::check())) {
             return redirect('login');
         } else {
-            $recent_comps = Competition::all()->take(3);
+            $recent_comps = Competition::orderBy('comp_date', 'desc')->take(3)->get();
             return view('welcome', ['recent_comps' => $recent_comps]);
         }
     }
