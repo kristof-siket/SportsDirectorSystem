@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Competition;
 use App\CompetitionsDistances;
+use App\Distance;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Input;
@@ -85,12 +86,14 @@ class CompetitionsController extends Controller
 //            return redirect()->route('login');
 //        }
 
-        return view('competitions.add_distances', ['comp' => Competition::find($comp_id)]);
+        $this_comp = Competition::find($comp_id);
+        return view('competitions.add_distances', ['comp' => $this_comp,
+            'distances' => Distance::where('sport_id', $this_comp->comp_sport)->get()]);
     }
 
     public function storeDistances(Request $request, $comp_id)
     {
-        $comp_distances[] = Input::get('comp_distances');
+        $comp_distances = Input::get('comp_distances');
         $competition = Competition::find($comp_id);
         if (\Auth::check()) {
             foreach ($comp_distances as $comp_distance) {

@@ -14,9 +14,9 @@
                 <form method="post" action="{{ route('competitions.storeDistances', ['comp_id' => $comp->comp_id]) }}">
                     {{ csrf_field() }}
                         <div class="form-group">
-                            <label for="comp_distances">The main sport of the competition (select one)</label>
+                            <label for="comp_distances">Distances of the competition (possible to select multiple)</label>
                             <select multiple class="form-control" id="comp_distances" name="comp_distances[]">
-                                @foreach(App\Distance::all() as $distance)
+                                @foreach($distances as $distance)
                                     <option value="{{ $distance->distance_id }}">{{ $distance->distance_name }}</option>
                                 @endforeach
                             </select>
