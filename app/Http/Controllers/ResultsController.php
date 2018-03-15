@@ -51,6 +51,20 @@ class ResultsController extends Controller
                 'result_multisport' => null // TODO: check if competition sport is a multi-sport
             ]);
 
+            $checker = [
+                'result_athlete' => \Auth::user()->id,
+                'result_competition' => $comp_id,
+                'result_distance' => $distance_id
+            ];
+
+            $existing_result = Result::where($checker)->get();
+
+
+            if ($existing_result) {
+                // TODO: flash message 'you've already entered to this comp'
+                return redirect()->route('competitions.index');
+            }
+
             if ($new_res) {
                 return redirect()->route('results.index', ['comp_id' => $comp_id]);
             } else {
