@@ -41,6 +41,19 @@ class ResultsController extends Controller
     public function enter($comp_id, $distance_id)
     {
         if (\Auth::check()) {
+
+            $existing_result = Result::where('result_athlete', \Auth::user()->id)
+                ->where('result_competition', $comp_id)
+                ->where('result_distance', $distance_id)
+                ->get();
+
+            if ($existing_result->isNotEmpty()) {
+                flash('You have already entered to this distance!')->warning();
+                return redirect()->route('competitions.index');
+            }
+
+            $comp = Competition::find($comp_id);
+
             $new_res = Result::create([
                 'disqualified' => 0,
                 'result_time' => 0,
@@ -51,26 +64,15 @@ class ResultsController extends Controller
                 'result_multisport' => null // TODO: check if competition sport is a multi-sport
             ]);
 
-            $checker = [
-                'result_athlete' => \Auth::user()->id,
-                'result_competition' => $comp_id,
-                'result_distance' => $distance_id
-            ];
-
-            $existing_result = Result::where($checker)->get();
-
-
-            if ($existing_result) {
-                // TODO: flash message 'you've already entered to this comp'
-                return redirect()->route('competitions.index');
-            }
-
             if ($new_res) {
+                flash('Successfully entered to ' . $comp->comp_name . '!')->success();
                 return redirect()->route('results.index', ['comp_id' => $comp_id]);
             } else {
+                flash('Could not enter to competition ' . $comp->comp_name . '!')->error()->important();
                 return redirect()->route('results.index', ['comp_id' => $comp_id]);
             }
         } else {
+            flash('You must be logged in to enter competitions!')->info();
             return redirect()->route('login');
         }
         // TODO: flash messages

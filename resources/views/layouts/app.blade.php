@@ -45,11 +45,10 @@
         </nav>
         @include('menus.hamburger-menu')
         @yield('primary')
-
         <div class="container">
-
-            @yield('content')<hr>
-
+            @include('flash::message')
+            @yield('content')
+            <hr>
             <footer>
                 <p>&copy; 2016 Company, Inc.</p>
             </footer>
