@@ -14,8 +14,13 @@ class CreateAnalyzerResultsTable extends Migration
     public function up()
     {
         Schema::create('analyzer_results', function (Blueprint $table) {
-            $table->increments('id');
-            $table->timestamps();
+            $table->increments('aresult_id');
+            $table->integer('aresult_result')->unsigned();
+            $table->float('aresult_timestamp')->unsigned();
+            $table->float('aresult_kilometers')->unsigned();
+            $table->float('aresult_pulse')->unsigned();
+
+            $table->foreign('aresult_result')->references('result_id')->on('results');
         });
     }
 
