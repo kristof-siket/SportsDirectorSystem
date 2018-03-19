@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Result;
+use App\Services\Interfaces\IResultAnalyzer;
 use Illuminate\Http\Request;
 
 class RunalyzerController extends Controller
@@ -19,11 +21,17 @@ class RunalyzerController extends Controller
     /**
      * Show the form for creating a new resource.
      *
+     * @param IResultAnalyzer $resultAnalyzer
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(IResultAnalyzer $resultAnalyzer)
     {
-        //
+        $result = Result::find(25);
+        ini_set('max_execution_time', 500);
+
+        $resultAnalyzer->initializeAnalyzerResults(0.5, $result);
+
+        return response('Database content created succesfully!');
     }
 
     /**

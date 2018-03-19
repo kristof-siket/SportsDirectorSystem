@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class AnalyzerResult extends Model
 {
     protected $primaryKey = 'aresult_id';
+    public $timestamps = false;
 
     protected $fillable = [
         'aresult_result',
