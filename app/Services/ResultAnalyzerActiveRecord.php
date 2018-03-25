@@ -25,12 +25,18 @@ class ResultAnalyzerActiveRecord implements IResultAnalyzer
      */
     public function initializeAnalyzerResults($sampleRate, Result $result)
     {
-        if (AnalyzerResult::all()->isNotEmpty()) {
+        $results = AnalyzerResult::all();
+
+        if ($results->isNotEmpty()) {
             AnalyzerResult::truncate();
         }
 
         $duration = $result->result_time;
         $timestamp = 0.0; // sec
+
+        /**
+         * $position float
+         */
         $position = 0.0; // km
         $pulse = rand(96, 123); // bpm (pulse in the beginning)
 
@@ -40,12 +46,18 @@ class ResultAnalyzerActiveRecord implements IResultAnalyzer
         $deadlock = rand(($duration * 0.65), ($duration * 0.8)); // The moment of the race where the competitor starts to be tired.
         $raceCondition = (float)rand(900, 950) / 1000;
 
-        while ($timestamp < $duration) {
+        while ($timestamp < $duration) { // TODO: fix the issue with the pulse calculation, it goes to high
             $tiring = ($timestamp > $deadlock ? (float)rand(5, 10) : 0) / 100000;
             $raceCondition = (float)(($timestamp > $deadlock - 300000) ? (float)rand(1100, 1200) / 1000 : (float)rand(900, 950) / 1000);
 
-            $newPosition = ($position + (float)($tempoBase * $freshness * $raceCondition) * ((float)rand(980, 1020) / (100000 / $sampleRate)));
-            $newPulse = ($pulse < 175 ? rand($pulse - 1, $pulse + 3) : rand($pulse - 2, $pulse + 2));
+            $newPosition = (float)($position + ((float)($tempoBase * $freshness * $raceCondition) * (rand(980, 1020) / 1000) / 20 ));
+            if ($pulse < 175) {
+                $newPulse = rand($pulse - 1, $pulse + 3);
+            } else if ($pulse > 195) {
+                $newPulse = rand($pulse - 5, $pulse + 2);
+            } else {
+                $newPulse = rand($pulse - 2, $pulse + 2);
+            }
 
             AnalyzerResult::create([
                 'aresult_result' => $result->result_id,

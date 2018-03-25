@@ -19,14 +19,14 @@ class RunalyzerController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Create the sample data for the race data analysis.
      *
      * @param IResultAnalyzer $resultAnalyzer
      * @return \Illuminate\Http\Response
      */
     public function create(IResultAnalyzer $resultAnalyzer)
     {
-        $result = Result::find(25);
+        $result = Result::find(25); // TODO: refactor this hard-coding
         ini_set('max_execution_time', 500);
 
         $resultAnalyzer->initializeAnalyzerResults(0.5, $result);
