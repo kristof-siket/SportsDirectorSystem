@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\AnalyzerResult;
 use App\Result;
 use App\Services\Interfaces\IResultAnalyzer;
 use Illuminate\Http\Request;
@@ -15,7 +16,25 @@ class RunalyzerController extends Controller
      */
     public function index()
     {
-        return view('runalyzer.index');
+        $pulses = array();
+        $kilometers = array();
+        $timestamp = 0.5; // NEVER EVER LIKE THIS...
+
+        $i = 0;
+        foreach (AnalyzerResult::all() as $ares) {
+            if ($ares->aresult_id % 10 == 0) {
+                $pulses[$i] = $ares->aresult_pulse;
+                $kilometers[$i] = $ares->aresult_kilometers;
+                $i++;
+            }
+        }
+
+        $tempos = array();
+        for ($i = 1; $i < sizeof($kilometers); $i++)
+        {
+            $tempos[$i] = ($kilometers[$i] - $kilometers[$i - 1]) * (60 / $timestamp) * 60;
+        }
+        return view('runalyzer.index', ["pulses" => $pulses, "tempos" => $tempos]);
     }
 
     /**

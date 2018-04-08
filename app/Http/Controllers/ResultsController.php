@@ -33,7 +33,7 @@ class ResultsController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Stores the result record of the entered athlete with result time 0.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
