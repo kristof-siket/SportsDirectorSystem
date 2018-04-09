@@ -23,7 +23,7 @@ class ResultAnalyzerActiveRecord implements IResultAnalyzer
      * The Result entity that this analysis belongs to.
      * @return void
      */
-    public function initializeAnalyzerResults($sampleRate, Result $result)
+    public function initializeAnalyzerResults(float $sampleRate, Result $result)
     {
         $results = AnalyzerResult::all();
 
@@ -71,5 +71,40 @@ class ResultAnalyzerActiveRecord implements IResultAnalyzer
             $position = $newPosition;
             $timestamp += $sampleRate;
         }
+    }
+
+    /**
+     * Gets the full set of pulse data from the analyzer results.
+     * @param Result $result
+     * @return mixed
+     */
+    public function getFullPulseData(Result $result)
+    {
+        $pulses = AnalyzerResult::all()->pluck('aresult_pulse');
+
+        return $pulses;
+    }
+
+    /**
+     * Gets the full set of kilometers data from the analyzer results.
+     * @param Result $result
+     * @return mixed
+     */
+    public function getFullKilometerData(Result $result)
+    {
+        $kilometers = AnalyzerResult::all()->pluck('aresult_kilometers');
+
+        return $kilometers;
+    }
+
+    /**
+     * Calculates the athlete's tempo (km/h) for every timestamps
+     * @param float $sampleRate
+     * @param Result $result
+     * @return mixed
+     */
+    public function getFullTempoData(float $sampleRate, Result $result)
+    {
+        // TODO: Implement getFullTempoData() method.
     }
 }

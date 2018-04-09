@@ -21,8 +21,13 @@ class ResultAnalyzerDataMapper implements IResultAnalyzer
      * @param Result $result
      * @return void
      */
-    public function initializeAnalyzerResults($sampleRate, Result $result)
+    public function initializeAnalyzerResults(float $sampleRate, Result $result)
     {
         // TODO: Implement initializeAnalyzerResults() method.
+    }
+
+    public function getFullResultAnalysis(Result $result)
+    {
+        // TODO: Implement getFullResultAnalysis() method.
     }
 }

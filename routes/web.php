@@ -31,6 +31,7 @@ Route::get('/competitions/{comp_id}/distances', 'CompetitionsController@addDista
 Route::post('/competitions/{comp_id}/savedistances', 'CompetitionsController@storeDistances')->name('competitions.storeDistances');
 Route::get('/results/{comp_id}', 'ResultsController@index')->name('results.index');
 Route::get('/competitions/{comp_id}/enter/{dist_id}', 'ResultsController@enter')->name('results.enter');
+Route::get('/runalyzer/show', 'RunalyzerController@show')->name('runalyzer.show');
 
 /*
  * Routes defined by auto-generated authentication (and maybe some extensions of that)

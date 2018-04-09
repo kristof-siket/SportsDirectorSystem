@@ -6,31 +6,18 @@
 @endsection
 
 @section('content')
-
     <div class="panel panel-primary">
         <!-- Default panel contents -->
-        <div class="panel-heading">Runalyzer</div>
+        <div class="panel-heading">Run a competition analysis</div>
         <div class="panel-body">
-            <div id ='myChart'>
-                <script type="text/javascript">
-                    document.addEventListener("DOMContentLoaded", function(){
-                        var myConfig = {"type":"line",
-                            "series":[
-                                {"values": {!! json_encode($pulses) !!} },
-                                {"values": {!! json_encode((array_values($tempos))) !!} }
-                            ],
-                            "plot": {"aspect": "spline"}  };
+            {!! Form::open(['url' => action('RunalyzerController@show'), 'method' => 'GET']) !!}
 
-                        zingchart.render({
-                            id : 'myChart',
-                            data : myConfig,
-                            height: "100%",
-                            width: "100%"
-                        });
-                    });
-                </script>
-            </div>
-
+            {!! Form::label('result', 'Select a competition result to analyze...'); !!}
+            {!! Form::select('result', array_pluck($results, 'result_id', 'result_id'), ['placeholder' => 'Pick a result..']) !!}
+            <br>
+            {!! Form::submit('Runalyze Me!', ['class' => 'btn btn-success']); !!}
+            {!! Form::close() !!}
         </div>
     </div>
+
 @endsection

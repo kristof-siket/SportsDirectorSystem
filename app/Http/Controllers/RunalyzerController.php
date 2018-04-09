@@ -16,25 +16,19 @@ class RunalyzerController extends Controller
      */
     public function index()
     {
-        $pulses = array();
-        $kilometers = array();
-        $timestamp = 0.5; // NEVER EVER LIKE THIS...
+        $results = Result::where('result_athlete', \Auth::user()->id)
+            ->where('result_time', '<>', 0)
+            ->get();
+
+        $comps = array();
 
         $i = 0;
-        foreach (AnalyzerResult::all() as $ares) {
-            if ($ares->aresult_id % 10 == 0) {
-                $pulses[$i] = $ares->aresult_pulse;
-                $kilometers[$i] = $ares->aresult_kilometers;
-                $i++;
-            }
+        foreach ($results as $r) {
+            $comps[$i] = $r->competition->comp_name;
+            $i++;
         }
 
-        $tempos = array();
-        for ($i = 1; $i < sizeof($kilometers); $i++)
-        {
-            $tempos[$i] = ($kilometers[$i] - $kilometers[$i - 1]) * (60 / $timestamp) * 60;
-        }
-        return view('runalyzer.index', ["pulses" => $pulses, "tempos" => $tempos]);
+        return view('runalyzer.index', ['results' => $results, 'labels' => $comps]);
     }
 
     /**
@@ -50,29 +44,31 @@ class RunalyzerController extends Controller
 
         $resultAnalyzer->initializeAnalyzerResults(0.5, $result);
 
-        return response('Database content created succesfully!');
+        return response('Database content created successfully!');
     }
 
     /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
+     * Displays the output analysis according to the specified settings.
+     * @param Request $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function show(Request $request)
     {
-        //
-    }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
+        $result = Result::find($request->input('result'));
+
+        $pulses = AnalyzerResult::where('aresult_result', $result->result_id)->pluck('aresult_pulse');
+        $kilometers = AnalyzerResult::where('aresult_result', $result->result_id)->pluck('aresult_kilometers');
+
+        $srate = 0.5; // HMM..
+
+        $tempos = array();
+
+        for ($i = 1; $i < sizeof($kilometers); $i++) {
+            $tempos[$i-1] = ($kilometers[$i] - $kilometers[$i-1]) / ($srate / 60 / 60);
+        }
+
+        return view('runalyzer.chart', ['pulses' => $pulses, 'tempos' => $tempos]);
     }
 
     /**
