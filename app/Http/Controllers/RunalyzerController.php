@@ -50,23 +50,16 @@ class RunalyzerController extends Controller
     /**
      * Displays the output analysis according to the specified settings.
      * @param Request $request
+     * @param IResultAnalyzer $resultAnalyzer
      * @return \Illuminate\Http\Response
      */
-    public function show(Request $request)
+    public function show(Request $request, IResultAnalyzer $resultAnalyzer)
     {
-
         $result = Result::find($request->input('result'));
 
         $pulses = AnalyzerResult::where('aresult_result', $result->result_id)->pluck('aresult_pulse');
-        $kilometers = AnalyzerResult::where('aresult_result', $result->result_id)->pluck('aresult_kilometers');
 
-        $srate = 0.5; // HMM..
-
-        $tempos = array();
-
-        for ($i = 1; $i < sizeof($kilometers); $i++) {
-            $tempos[$i-1] = ($kilometers[$i] - $kilometers[$i-1]) / ($srate / 60 / 60);
-        }
+        $tempos = $resultAnalyzer->getFullTempoData(0.5, $result);
 
         return view('runalyzer.chart', ['pulses' => $pulses, 'tempos' => $tempos]);
     }

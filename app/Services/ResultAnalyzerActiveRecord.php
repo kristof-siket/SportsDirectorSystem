@@ -105,6 +105,14 @@ class ResultAnalyzerActiveRecord implements IResultAnalyzer
      */
     public function getFullTempoData(float $sampleRate, Result $result)
     {
-        // TODO: Implement getFullTempoData() method.
+        $kilometers = AnalyzerResult::where('aresult_result', $result->result_id)->pluck('aresult_kilometers');
+
+        $tempos = array();
+
+        for ($i = 1; $i < sizeof($kilometers); $i++) {
+            $tempos[$i-1] = ($kilometers[$i] - $kilometers[$i-1]) / ($sampleRate / 60 / 60);
+        }
+
+        return $tempos;
     }
 }
