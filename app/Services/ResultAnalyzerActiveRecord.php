@@ -12,6 +12,7 @@ use App\AnalyzerResult;
 use App\Result;
 use App\Services\ORMServices\DoctrineService;
 use App\Services\Interfaces\IResultAnalyzer;
+use App\Services\Repository\Result\ResultRepoEloquent;
 
 class ResultAnalyzerActiveRecord implements IResultAnalyzer
 {
@@ -142,6 +143,14 @@ class ResultAnalyzerActiveRecord implements IResultAnalyzer
          */
         $ids = $results->pluck('result_id');
 
+        dump($ids);
         return $ids;
     }
+
+    public function getResultRepository()
+    {
+        return new ResultRepoEloquent();
+    }
+
+
 }

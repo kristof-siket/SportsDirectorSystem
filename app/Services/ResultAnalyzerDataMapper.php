@@ -11,6 +11,7 @@ namespace App\Services\Interfaces;
 use App\Entities\Result;
 use App\Entities\User;
 use App\Services\ORMServices\DoctrineService;
+use App\Services\Repository\Result\ResultRepoDoctrine;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
 
@@ -91,6 +92,28 @@ class ResultAnalyzerDataMapper extends DoctrineService implements IResultAnalyze
      */
     public function getResultsId($results)
     {
-        return array_pluck($results, 'result_id');
+        //dump($results);
+        /**
+         * @var Result[] $results
+         */
+
+        $ids = array();
+
+        $i = 0;
+
+        foreach ($results as $result) {
+            $ids[$i] = $result->getResultId();
+            $i++;
+        }
+
+        //dump($ids);
+        return $ids;
     }
+
+    public function getResultRepository()
+    {
+        return new ResultRepoDoctrine(app('em'));
+    }
+
+
 }

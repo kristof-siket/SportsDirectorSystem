@@ -55,4 +55,10 @@ interface IResultAnalyzer
      */
     public function getResultsId($results);
 
+    /**
+     * Gets the entity repository for Result entity type.
+     * @return mixed
+     */
+    public function getResultRepository();
+
 }
