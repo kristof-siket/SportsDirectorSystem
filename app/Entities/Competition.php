@@ -55,7 +55,7 @@ class Competition
     protected $comp_name;
 
     /**
-     * @ORM\Column(type="date", nullable=true)
+     * @ORM\Column(type="datetime", nullable=true)
      */
     protected $comp_date;
 

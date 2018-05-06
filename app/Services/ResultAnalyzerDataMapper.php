@@ -9,7 +9,9 @@
 namespace App\Services\Interfaces;
 
 use App\Entities\Result;
+use App\Entities\User;
 use App\Services\ORMServices\DoctrineService;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
 
 class ResultAnalyzerDataMapper extends DoctrineService implements IResultAnalyzer
@@ -71,8 +73,13 @@ class ResultAnalyzerDataMapper extends DoctrineService implements IResultAnalyze
      */
     public function getResultsOfUser($user_id)
     {
-        $query = $this->em->createQuery('SELECT r FROM Result WHERE r.result_athlete == :user_id')
-            ->setParameter('user_id', $user_id);
+        $qb = $this->em->createQueryBuilder();
+        $query = $qb->select('r')
+            ->from('App\Entities\Result', 'r')
+            ->join('r.result_athlete', 'a')
+            ->where('a.id = :user_id AND r.result_time > 0')
+            ->setParameter('user_id', $user_id)
+            ->getQuery();
 
         return $query->getResult();
     }
@@ -84,11 +91,6 @@ class ResultAnalyzerDataMapper extends DoctrineService implements IResultAnalyze
      */
     public function getResultsId($results)
     {
-        $query = $this->em->createQueryBuilder();
-        $res = $query->select('r.result_id')
-            ->from($results, 'r')
-            ->getQuery()->getResult();
-
-        return $res;
+        return array_pluck($results, 'result_id');
     }
 }
