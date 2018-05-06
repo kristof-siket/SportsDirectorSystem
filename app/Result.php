@@ -42,4 +42,9 @@ class Result extends Model
     {
         return $this->belongsTo('App\Competition', 'result_competition');
     }
+
+    public function __toString()
+    {
+        return $this->competition->comp_name;
+    }
 }

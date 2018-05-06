@@ -12,23 +12,14 @@ class RunalyzerController extends Controller
     /**
      * Display a listing of the resource.
      *
+     * @param IResultAnalyzer $resultAnalyzer
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(IResultAnalyzer $resultAnalyzer)
     {
-        $results = Result::where('result_athlete', \Auth::user()->id)
-            ->where('result_time', '<>', 0)
-            ->get();
-
-        $comps = array();
-
-        $i = 0;
-        foreach ($results as $r) {
-            $comps[$i] = $r->competition->comp_name;
-            $i++;
-        }
-
-        return view('runalyzer.index', ['results' => $results, 'labels' => $comps]);
+        $results = $resultAnalyzer->getResultsOfUser(\Auth::id());
+        $ids = $resultAnalyzer->getResultsId($results);
+        return view('runalyzer.index', ['results' => $results, 'ids' => $ids]);
     }
 
     /**
@@ -55,9 +46,9 @@ class RunalyzerController extends Controller
      */
     public function show(Request $request, IResultAnalyzer $resultAnalyzer)
     {
-        $result = Result::find($request->input('result'));
+        $result = Result::find($request->input('result')); // TODO: Move query to service!
 
-        $pulses = AnalyzerResult::where('aresult_result', $result->result_id)->pluck('aresult_pulse');
+        $pulses = $resultAnalyzer->getFullPulseData($result);
 
         $tempos = $resultAnalyzer->getFullTempoData(0.5, $result);
 
