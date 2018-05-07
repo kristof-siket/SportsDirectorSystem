@@ -147,6 +147,9 @@ class ResultAnalyzerActiveRecord implements IResultAnalyzer
         return $ids;
     }
 
+    /**
+     * @return Repository\Result\IResultRepository|ResultRepoEloquent
+     */
     public function getResultRepository()
     {
         return new ResultRepoEloquent();

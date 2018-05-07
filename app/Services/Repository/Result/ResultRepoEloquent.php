@@ -9,6 +9,8 @@
 namespace App\Services\Repository\Result;
 
 
+use App\Result;
+
 class ResultRepoEloquent implements IResultRepository
 {
     public function getCompetitionResults($competition)
@@ -23,6 +25,6 @@ class ResultRepoEloquent implements IResultRepository
 
     public function getResultById($result_id)
     {
-        // TODO: Implement getResultById() method.
+        return Result::find($result_id);
     }
 }

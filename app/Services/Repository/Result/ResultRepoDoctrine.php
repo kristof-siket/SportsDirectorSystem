@@ -8,11 +8,17 @@
 
 namespace App\Services\Repository\Result;
 
-
+use App\Entities\Result;
 use App\Services\ORMServices\DoctrineService;
+use Doctrine\ORM\EntityRepository;
 
 class ResultRepoDoctrine extends DoctrineService implements IResultRepository
 {
+    /**
+     * @var EntityRepository $repo
+     */
+    private $repo;
+
     public function getCompetitionResults($competition)
     {
         // TODO: Implement getCompetitionResults() method.
@@ -25,6 +31,12 @@ class ResultRepoDoctrine extends DoctrineService implements IResultRepository
 
     public function getResultById($result_id)
     {
-        // TODO: Implement getResultById() method.
+        return $this->repo->find($result_id);
+    }
+
+    public function __construct($em)
+    {
+        parent::__construct($em);
+        $this->repo = $this->em->getRepository(Result::class);
     }
 }

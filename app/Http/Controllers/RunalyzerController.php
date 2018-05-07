@@ -46,7 +46,9 @@ class RunalyzerController extends Controller
      */
     public function show(Request $request, IResultAnalyzer $resultAnalyzer)
     {
-        $result = Result::find($request->input('result')); // TODO: Move query to service!
+        $resultRepo = $resultAnalyzer->getResultRepository();
+
+        $result = $resultRepo->getResultById($request->input('result'));
 
         $pulses = $resultAnalyzer->getFullPulseData($result);
 

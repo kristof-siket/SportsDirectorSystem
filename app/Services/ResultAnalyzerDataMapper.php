@@ -44,7 +44,28 @@ class ResultAnalyzerDataMapper extends DoctrineService implements IResultAnalyze
      */
     public function getFullPulseData($result)
     {
-        // TODO: Implement getFullPulseData() method.
+        $qb = $this->em->createQueryBuilder();
+
+        /**
+         * @var Result $result
+         */
+        $query = $qb->select('a.aresult_pulse')
+            ->from('App\Entities\AnalyzerResult', 'a')
+            ->where('a.aresult_result = :result_id')
+            ->setParameter('result_id', $result->getResultId())
+            ->getQuery();
+
+        $pulses = $query->getResult();
+
+        $res = array();
+
+        $i = 0;
+        foreach ($pulses as $pulse) {
+            $res[$i] = $pulse['aresult_pulse'];
+            $i++;
+        }
+
+        return $res;
     }
 
     /**
@@ -65,7 +86,26 @@ class ResultAnalyzerDataMapper extends DoctrineService implements IResultAnalyze
      */
     public function getFullTempoData(float $sampleRate, $result)
     {
-        // TODO: Implement getFullTempoData() method.
+        $qb = $this->em->createQueryBuilder();
+
+        /**
+         * @var Result $result
+         */
+        $query = $qb->select('a.aresult_kilometers')
+            ->from('App\Entities\AnalyzerResult', 'a')
+            ->where('a.aresult_result = :result_id')
+            ->setParameter('result_id', $result->getResultId())
+            ->getQuery();
+
+        $kilometers = $query->getResult();
+
+        $tempos = array();
+
+        for ($i = 1; $i < sizeof($kilometers); $i++) {
+            $tempos[$i-1] = ($kilometers[$i]['aresult_kilometers'] - $kilometers[$i-1]['aresult_kilometers']) / ($sampleRate / 60 / 60);
+        }
+
+        return $tempos;
     }
 
     /**
@@ -110,6 +150,9 @@ class ResultAnalyzerDataMapper extends DoctrineService implements IResultAnalyze
         return $ids;
     }
 
+    /**
+     * @return \App\Services\Repository\Result\IResultRepository|ResultRepoDoctrine
+     */
     public function getResultRepository()
     {
         return new ResultRepoDoctrine(app('em'));

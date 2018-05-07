@@ -9,6 +9,8 @@
 namespace App\Services\Interfaces;
 
 
+use App\Services\Repository\Result\IResultRepository;
+
 interface IResultAnalyzer
 {
     /**
@@ -57,7 +59,7 @@ interface IResultAnalyzer
 
     /**
      * Gets the entity repository for Result entity type.
-     * @return mixed
+     * @return IResultRepository
      */
     public function getResultRepository();
 
