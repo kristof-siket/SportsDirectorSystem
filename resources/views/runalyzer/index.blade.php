@@ -13,7 +13,14 @@
             {!! Form::open(['url' => action('RunalyzerController@show'), 'method' => 'GET']) !!}
 
             {!! Form::label('result', 'Select a competition result to analyze...'); !!}
-            {!! Form::select('result', array_pluck($results, 'result_id', 'result_id'), ['placeholder' => 'Pick a result..']) !!}
+
+            <select id="result" name="result">
+                <option value="">Pick a result..</option>
+                @for ($i = 0; $i < count($results); $i++)
+                    <option value="{{ $ids[$i] }}">{{ $results[$i] }}</option>
+                @endfor
+
+            </select>
             <br>
             {!! Form::submit('Runalyze Me!', ['class' => 'btn btn-success']); !!}
             {!! Form::close() !!}

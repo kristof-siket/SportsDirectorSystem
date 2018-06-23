@@ -12,23 +12,15 @@ class RunalyzerController extends Controller
     /**
      * Display a listing of the resource.
      *
+     * @param IResultAnalyzer $resultAnalyzer
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(IResultAnalyzer $resultAnalyzer)
     {
-        $results = Result::where('result_athlete', \Auth::user()->id)
-            ->where('result_time', '<>', 0)
-            ->get();
+        $results = $resultAnalyzer->getResultsOfUser(\Auth::id());
+        $ids = $resultAnalyzer->getResultsId($results);
 
-        $comps = array();
-
-        $i = 0;
-        foreach ($results as $r) {
-            $comps[$i] = $r->competition->comp_name;
-            $i++;
-        }
-
-        return view('runalyzer.index', ['results' => $results, 'labels' => $comps]);
+        return view('runalyzer.index', ['results' => $results, 'ids' => $ids]);
     }
 
     /**
@@ -55,11 +47,18 @@ class RunalyzerController extends Controller
      */
     public function show(Request $request, IResultAnalyzer $resultAnalyzer)
     {
-        $result = Result::find($request->input('result'));
+        $resultRepo = $resultAnalyzer->getResultRepository();
 
-        $pulses = AnalyzerResult::where('aresult_result', $result->result_id)->pluck('aresult_pulse');
+        $result = $resultRepo->getResultById($request->input('result'));
+
+        $pulses = $resultAnalyzer->getFullPulseData($result);
 
         $tempos = $resultAnalyzer->getFullTempoData(0.5, $result);
+
+        $stats = $resultAnalyzer->getStatistics($result);
+
+        dump($stats);
+        dump(memory_get_peak_usage(true));
 
         return view('runalyzer.chart', ['pulses' => $pulses, 'tempos' => $tempos]);
     }

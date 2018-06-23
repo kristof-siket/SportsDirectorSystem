@@ -10,7 +10,9 @@ namespace App\Services;
 
 use App\AnalyzerResult;
 use App\Result;
+use App\Services\ORMServices\DoctrineService;
 use App\Services\Interfaces\IResultAnalyzer;
+use App\Services\Repository\Result\ResultRepoEloquent;
 
 class ResultAnalyzerActiveRecord implements IResultAnalyzer
 {
@@ -19,11 +21,11 @@ class ResultAnalyzerActiveRecord implements IResultAnalyzer
      * Creates sample data for the analyzer results data table.
      * @param $sampleRate float
      * The frequency of records.
-     * @param Result $result
+     * @param mixed $result
      * The Result entity that this analysis belongs to.
      * @return void
      */
-    public function initializeAnalyzerResults(float $sampleRate, Result $result)
+    public function initializeAnalyzerResults(float $sampleRate, $result)
     {
         $results = AnalyzerResult::all();
 
@@ -75,10 +77,10 @@ class ResultAnalyzerActiveRecord implements IResultAnalyzer
 
     /**
      * Gets the full set of pulse data from the analyzer results.
-     * @param Result $result
+     * @param mixed $result
      * @return mixed
      */
-    public function getFullPulseData(Result $result)
+    public function getFullPulseData($result)
     {
         $pulses = AnalyzerResult::all()->pluck('aresult_pulse');
 
@@ -87,10 +89,10 @@ class ResultAnalyzerActiveRecord implements IResultAnalyzer
 
     /**
      * Gets the full set of kilometers data from the analyzer results.
-     * @param Result $result
+     * @param mixed $result
      * @return mixed
      */
-    public function getFullKilometerData(Result $result)
+    public function getFullKilometerData($result)
     {
         $kilometers = AnalyzerResult::all()->pluck('aresult_kilometers');
 
@@ -100,10 +102,10 @@ class ResultAnalyzerActiveRecord implements IResultAnalyzer
     /**
      * Calculates the athlete's tempo (km/h) for every timestamps
      * @param float $sampleRate
-     * @param Result $result
+     * @param mixed $result
      * @return mixed
      */
-    public function getFullTempoData(float $sampleRate, Result $result)
+    public function getFullTempoData(float $sampleRate, $result)
     {
         $kilometers = AnalyzerResult::where('aresult_result', $result->result_id)->pluck('aresult_kilometers');
 
@@ -114,5 +116,53 @@ class ResultAnalyzerActiveRecord implements IResultAnalyzer
         }
 
         return $tempos;
+    }
+
+    /**
+     * @param $user_id int
+     * @return mixed
+     */
+    public function getResultsOfUser($user_id)
+    {
+        $results = Result::where('result_athlete', \Auth::user()->id)
+            ->where('result_time', '<>', 0)
+            ->get();
+
+        return $results;
+    }
+
+    /**
+     * Gets the result ID of a specified Result object.
+     * @param $results mixed
+     * @return mixed
+     */
+    public function getResultsId($results)
+    {
+        /**
+         * @var Result[] $results
+         */
+        $ids = $results->pluck('result_id');
+
+        dump($ids);
+        return $ids;
+    }
+
+    /**
+     * @return Repository\Result\IResultRepository|ResultRepoEloquent
+     */
+    public function getResultRepository()
+    {
+        return new ResultRepoEloquent();
+    }
+
+
+    /**
+     * Gets summarized statistics of a given competition result.
+     * @param $result
+     * @return mixed
+     */
+    public function getStatistics($result)
+    {
+        // TODO: Implement getStatistics() method.
     }
 }

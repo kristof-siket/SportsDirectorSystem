@@ -34,5 +34,4 @@ class Distance extends Model
     {
         return $this->hasMany('App\CompetitionDistances', 'distance_id');
     }
-    // TODO: maybe these foreign keys result error, check this and refactor if needed.
 }

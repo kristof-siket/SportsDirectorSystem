@@ -22,6 +22,4 @@ class CompetitionsDistances extends Model
     {
         return $this->belongsTo('App\Distance', 'distance_id');
     }
-
-    // these two methods work without specifying foreign keys, because of the naming conventions
 }
