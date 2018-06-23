@@ -19,6 +19,7 @@ class RunalyzerController extends Controller
     {
         $results = $resultAnalyzer->getResultsOfUser(\Auth::id());
         $ids = $resultAnalyzer->getResultsId($results);
+
         return view('runalyzer.index', ['results' => $results, 'ids' => $ids]);
     }
 
@@ -53,6 +54,11 @@ class RunalyzerController extends Controller
         $pulses = $resultAnalyzer->getFullPulseData($result);
 
         $tempos = $resultAnalyzer->getFullTempoData(0.5, $result);
+
+        $stats = $resultAnalyzer->getStatistics($result);
+
+        dump($stats);
+        dump(memory_get_peak_usage(true));
 
         return view('runalyzer.chart', ['pulses' => $pulses, 'tempos' => $tempos]);
     }

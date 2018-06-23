@@ -156,4 +156,13 @@ class ResultAnalyzerActiveRecord implements IResultAnalyzer
     }
 
 
+    /**
+     * Gets summarized statistics of a given competition result.
+     * @param $result
+     * @return mixed
+     */
+    public function getStatistics($result)
+    {
+        // TODO: Implement getStatistics() method.
+    }
 }

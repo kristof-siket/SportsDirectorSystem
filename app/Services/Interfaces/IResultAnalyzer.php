@@ -63,4 +63,11 @@ interface IResultAnalyzer
      */
     public function getResultRepository();
 
+    /**
+     * Gets summarized statistics of a given competition result.
+     * @param $result
+     * @return mixed
+     */
+    public function getStatistics($result);
+
 }
