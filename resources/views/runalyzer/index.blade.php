@@ -21,6 +21,14 @@
                 @endfor
 
             </select>
+
+            <br>
+            {!! Form::label('analysis_type', 'Select an analysis type:'); !!}
+
+            <br>
+            <b>Pulse and speed graphs:</b><input type="radio" id="analysis_type_graph" name="analysis_type" value="graph"><br>
+            <b>Statistics:</b><input type="radio" id="analysis_type_stat" name="analysis_type" value="stat"><br>
+            
             <br>
             {!! Form::submit('Runalyze Me!', ['class' => 'btn btn-success']); !!}
             {!! Form::close() !!}

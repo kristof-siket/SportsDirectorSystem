@@ -50,17 +50,20 @@ class RunalyzerController extends Controller
         $resultRepo = $resultAnalyzer->getResultRepository();
 
         $result = $resultRepo->getResultById($request->input('result'));
+        
+        if ($request->input('analysis_type') == 'graph')
+        {
+            $pulses = $resultAnalyzer->getFullPulseData($result);
+            $tempos = $resultAnalyzer->getFullTempoData(0.5, $result);
+            return view('runalyzer.chart', ['pulses' => $pulses, 'tempos' => $tempos]);
+        }
 
-        $pulses = $resultAnalyzer->getFullPulseData($result);
-
-        $tempos = $resultAnalyzer->getFullTempoData(0.5, $result);
-
-        $stats = $resultAnalyzer->getStatistics($result);
-
-        dump($stats);
-        dump(memory_get_peak_usage(true));
-
-        return view('runalyzer.chart', ['pulses' => $pulses, 'tempos' => $tempos]);
+        else
+        {
+            $stats = $resultAnalyzer->getStatistics($result);
+            dump(json_encode($stats));
+            return view('runalyzer.stats', ['stats' => $stats]);
+        }
     }
 
     /**

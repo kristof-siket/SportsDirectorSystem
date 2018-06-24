@@ -183,13 +183,12 @@ class ResultAnalyzerDataMapper extends DoctrineService implements IResultAnalyze
         $maxtempo = max($tempos);
 
         $statistics = array(
-            [
                 'avg_pulse' => $avgpulse,
                 'avg_tempo' => $avgtempo,
                 'max_pulse' => $maxpulse,
-                'max_tempo' => $maxtempo
-                ]);
+                'max_tempo' => $maxtempo);
 
+        dump($statistics);
         return $statistics;
     }
 }
