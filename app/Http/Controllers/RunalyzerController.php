@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\AnalyzerResult;
 use App\Result;
 use App\Services\Interfaces\IResultAnalyzer;
+use App\User;
 use Illuminate\Http\Request;
 
 class RunalyzerController extends Controller
@@ -50,6 +51,10 @@ class RunalyzerController extends Controller
         $resultRepo = $resultAnalyzer->getResultRepository();
 
         $result = $resultRepo->getResultById($request->input('result'));
+
+        $compresults = $resultRepo->getCompetitionResults($result->getResultCompetition());
+
+        dump($compresults);
         
         if ($request->input('analysis_type') == 'graph')
         {

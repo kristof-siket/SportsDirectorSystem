@@ -15,9 +15,16 @@ use App\Services\ORMServices\DoctrineService;
 use App\Services\Repository\Result\ResultRepoDoctrine;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityRepository;
 
 class ResultAnalyzerDataMapper extends DoctrineService implements IResultAnalyzer
 {
+    public function __construct($em)
+    {
+        $this->em = $em;
+        parent::__construct($em, $this->em->getClassMetadata(Result::class));
+    }
+
     /**
      * Creates sample data for the analyzer results data table.
      * @param $sampleRate float
@@ -144,11 +151,11 @@ class ResultAnalyzerDataMapper extends DoctrineService implements IResultAnalyze
     }
 
     /**
-     * @return \App\Services\Repository\Result\IResultRepository|ResultRepoDoctrine
+     * @return EntityRepository
      */
     public function getResultRepository()
     {
-        return new ResultRepoDoctrine(app('em'));
+        return new ResultRepoDoctrine($this->em);
     }
 
     /**

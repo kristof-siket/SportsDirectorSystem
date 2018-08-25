@@ -9,16 +9,19 @@
 namespace App\Services\ORMServices;
 
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\Mapping;
 
-abstract class DoctrineService
+abstract class DoctrineService extends EntityRepository
 {
     /**
      * @var EntityManager
      */
     protected $em;
 
-    public function __construct($em)
+    public function __construct($em, Mapping\ClassMetadata $class)
     {
-        $this->em = $em;
+        parent::__construct($em, $class);
     }
 }

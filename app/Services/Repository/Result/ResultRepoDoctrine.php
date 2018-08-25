@@ -8,35 +8,42 @@
 
 namespace App\Services\Repository\Result;
 
+use App\Entities\Competition;
 use App\Entities\Result;
 use App\Services\ORMServices\DoctrineService;
-use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\EntityManager;
 
 class ResultRepoDoctrine extends DoctrineService implements IResultRepository
 {
     /**
-     * @var EntityRepository $repo
+     * @param $competition Competition
+     * @return array
      */
-    private $repo;
-
     public function getCompetitionResults($competition)
     {
-        // TODO: Implement getCompetitionResults() method.
+        return $this->findBy(array('result_competition' => $competition));
     }
 
     public function getAthleteResults($athlete)
     {
-        // TODO: Implement getAthleteResults() method.
+            $builder = $this->em->createQueryBuilder();
+            $query = $builder->select('r"')
+                ->from('App\Entities\Result', 'r')
+                ->where('r.result_athlete = :athlete')
+                ->setParameter('athlete', $athlete)
+                ->getQuery();
+
+            return $query->getResult();
     }
 
     public function getResultById($result_id)
     {
-        return $this->repo->find($result_id);
+        return $this->find($result_id);
     }
 
-    public function __construct($em)
+
+    public function __construct(EntityManager $em)
     {
-        parent::__construct($em);
-        $this->repo = $this->em->getRepository(Result::class);
+        parent::__construct($em, $em->getClassMetadata(Result::class));
     }
 }
