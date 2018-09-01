@@ -80,6 +80,7 @@ class ResultAnalyzerActiveRecord implements IResultAnalyzer
 
     /**
      * Gets the full set of pulse data from the analyzer results.
+     *
      * @param $result Result
      * @return array
      */
@@ -88,7 +89,7 @@ class ResultAnalyzerActiveRecord implements IResultAnalyzer
         $pulses = AnalyzerResult::where('aresult_result', $result->result_id)
             ->pluck('aresult_pulse');
 
-        return $pulses;
+        return $pulses->toArray();
     }
 
     /**
@@ -165,11 +166,32 @@ class ResultAnalyzerActiveRecord implements IResultAnalyzer
 
     /**
      * Gets summarized statistics of a given competition result.
-     * @param $result
+     *
+     * @param $result Result
      * @return mixed
      */
     public function getStatistics($result)
     {
-        // TODO: Implement getStatistics() method.
+        $tempodata = $this->getFullTempoData(0.5, $result);
+        $pulsedata = $this->getFullPulseData($result);
+
+        dump($pulsedata);
+
+        $pulsedata = array_filter($pulsedata);
+        $tempodata = array_filter($tempodata);
+
+        $avgpulse = ( count($pulsedata) > 0 ) ? ( array_sum($pulsedata) / count($pulsedata) ) : 0;
+        $avgtempo = ( count($tempodata) > 0 ) ? ( array_sum($tempodata) / count($tempodata) ) : 0;
+
+        $maxpulse = max($pulsedata);
+        $maxtempo = max($tempodata);
+
+        $statistics = array(
+            'avg_pulse' => $avgpulse,
+            'avg_tempo' => $avgtempo,
+            'max_pulse' => $maxpulse,
+            'max_tempo' => $maxtempo);
+
+        return $statistics;
     }
 }

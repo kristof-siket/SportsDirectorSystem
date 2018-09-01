@@ -39,6 +39,7 @@ class ResultAnalyzerDataMapper extends DoctrineService implements IResultAnalyze
 
     /**
      * Gets the full set of pulse data from the analyzer results.
+     *
      * @param mixed $result
      * @return mixed
      */
@@ -57,8 +58,8 @@ class ResultAnalyzerDataMapper extends DoctrineService implements IResultAnalyze
 
         $pulses = $query->getResult();
 
+        // TODO: Find a better solution for getting a normal array of the results!
         $res = array();
-
         $i = 0;
         foreach ($pulses as $pulse) {
             $res[$i] = $pulse['aresult_pulse'];
@@ -70,12 +71,34 @@ class ResultAnalyzerDataMapper extends DoctrineService implements IResultAnalyze
 
     /**
      * Gets the full set of kilometers data from the analyzer results.
+     *
      * @param mixed $result
      * @return mixed
      */
     public function getFullKilometerData($result)
     {
-        // TODO: Implement getFullKilometerData() method.
+        $qb = $this->em->createQueryBuilder();
+
+        /**
+         * @var Result $result
+         */
+        $query = $qb->select('a.aresult_kilometers')
+            ->from('App\Entities\AnalyzerResult', 'a')
+            ->where('a.aresult_result = :result_id')
+            ->setParameter('result_id', $result->getResultId())
+            ->getQuery();
+
+        $kilometers = $query->getResult();
+
+        // TODO: Find a better solution for getting a normal array of the results!
+        $res = array();
+        $i = 0;
+        foreach ($kilometers as $kilometer) {
+            $res[$i] = $kilometer['aresult_pulse'];
+            $i++;
+        }
+
+        return $res;
     }
 
     /**
@@ -124,21 +147,17 @@ class ResultAnalyzerDataMapper extends DoctrineService implements IResultAnalyze
      */
     public function getResultsId($results)
     {
-        //dump($results);
+        $ids = array();
+        $i = 0;
+
         /**
          * @var Result[] $results
          */
-
-        $ids = array();
-
-        $i = 0;
-
         foreach ($results as $result) {
             $ids[$i] = $result->getResultId();
             $i++;
         }
 
-        //dump($ids);
         return $ids;
     }
 
@@ -155,8 +174,6 @@ class ResultAnalyzerDataMapper extends DoctrineService implements IResultAnalyze
      */
     public function getStatistics($result)
     {
-        $repo = $this->getResultRepository();
-
         $tempos = $this->getFullTempoData(0.5, $result);
         $pulses = $this->getFullPulseData($result);
 
@@ -187,7 +204,6 @@ class ResultAnalyzerDataMapper extends DoctrineService implements IResultAnalyze
                 'max_pulse' => $maxpulse,
                 'max_tempo' => $maxtempo);
 
-        dump($statistics);
         return $statistics;
     }
 }
