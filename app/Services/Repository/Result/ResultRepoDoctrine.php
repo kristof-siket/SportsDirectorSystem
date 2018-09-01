@@ -16,14 +16,27 @@ use Doctrine\ORM\EntityManager;
 class ResultRepoDoctrine extends DoctrineService implements IResultRepository
 {
     /**
-     * @param $competition Competition
+     * @param $competition int
      * @return array
      */
     public function getCompetitionResults($competition)
     {
-        return $this->findBy(array('result_competition' => $competition));
+        $qb = $this->em->createQueryBuilder();
+
+        $query = $qb->select('r')
+            ->from('App\Entities\Result', 'r')
+            ->join('r.result_competition', 'c')
+            ->where('c.comp_id = :comp_id AND r.result_time > 0')
+            ->setParameter('user_id', $competition)
+            ->getQuery();
+
+        return $query->getResult();
     }
 
+    /**
+     * @param $athlete int
+     * @return array
+     */
     public function getAthleteResults($athlete)
     {
         $qb = $this->em->createQueryBuilder();
@@ -38,12 +51,19 @@ class ResultRepoDoctrine extends DoctrineService implements IResultRepository
         return $query->getResult();
     }
 
+    /**
+     * @param $result_id int
+     * @return null|Result
+     */
     public function getResultById($result_id)
     {
         return $this->find($result_id);
     }
 
-
+    /**
+     * ResultRepoDoctrine constructor.
+     * @param EntityManager $em
+     */
     public function __construct(EntityManager $em)
     {
         parent::__construct($em, $em->getClassMetadata(Result::class));
