@@ -18,7 +18,10 @@ class RunalyzerController extends Controller
      */
     public function index(IResultAnalyzer $resultAnalyzer)
     {
-        $results = $resultAnalyzer->getResultsOfUser(\Auth::id());
+        $results = $resultAnalyzer->getResultRepository()->getAthleteResults(\Auth::id());
+
+        dump($results);
+
         $ids = $resultAnalyzer->getResultsId($results);
 
         return view('runalyzer.index', ['results' => $results, 'ids' => $ids]);
@@ -52,21 +55,20 @@ class RunalyzerController extends Controller
 
         $result = $resultRepo->getResultById($request->input('result'));
 
-        $compresults = $resultRepo->getCompetitionResults($result->getResultCompetition());
-
-        dump($compresults);
-        
         if ($request->input('analysis_type') == 'graph')
         {
             $pulses = $resultAnalyzer->getFullPulseData($result);
             $tempos = $resultAnalyzer->getFullTempoData(0.5, $result);
+
             return view('runalyzer.chart', ['pulses' => $pulses, 'tempos' => $tempos]);
         }
 
         else
         {
             $stats = $resultAnalyzer->getStatistics($result);
+
             dump(json_encode($stats));
+
             return view('runalyzer.stats', ['stats' => $stats]);
         }
     }
