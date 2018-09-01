@@ -19,10 +19,13 @@ class ResultAnalyzerActiveRecord implements IResultAnalyzer
 
     /**
      * Creates sample data for the analyzer results data table.
+     *
      * @param $sampleRate float
      * The frequency of records.
+     *
      * @param mixed $result
      * The Result entity that this analysis belongs to.
+     *
      * @return void
      */
     public function initializeAnalyzerResults(float $sampleRate, $result)
@@ -77,37 +80,42 @@ class ResultAnalyzerActiveRecord implements IResultAnalyzer
 
     /**
      * Gets the full set of pulse data from the analyzer results.
-     * @param mixed $result
-     * @return mixed
+     * @param $result Result
+     * @return array
      */
     public function getFullPulseData($result)
     {
-        $pulses = AnalyzerResult::all()->pluck('aresult_pulse');
+        $pulses = AnalyzerResult::where('aresult_result', $result->result_id)
+            ->pluck('aresult_pulse');
 
         return $pulses;
     }
 
     /**
      * Gets the full set of kilometers data from the analyzer results.
-     * @param mixed $result
-     * @return mixed
+     *
+     * @param $result Result
+     * @return array
      */
     public function getFullKilometerData($result)
     {
-        $kilometers = AnalyzerResult::all()->pluck('aresult_kilometers');
+        $kilometers = AnalyzerResult::where('aresult_result', $result->result_id)
+            ->pluck('aresult_kilometers');
 
         return $kilometers;
     }
 
     /**
      * Calculates the athlete's tempo (km/h) for every timestamps
+     *
      * @param float $sampleRate
      * @param mixed $result
      * @return mixed
      */
     public function getFullTempoData(float $sampleRate, $result)
     {
-        $kilometers = AnalyzerResult::where('aresult_result', $result->result_id)->pluck('aresult_kilometers');
+        $kilometers = AnalyzerResult::where('aresult_result', $result->result_id)
+            ->pluck('aresult_kilometers');
 
         $tempos = array();
 
@@ -120,11 +128,11 @@ class ResultAnalyzerActiveRecord implements IResultAnalyzer
 
     /**
      * @param $user_id int
-     * @return mixed
+     * @return array
      */
     public function getResultsOfUser($user_id)
     {
-        $results = Result::where('result_athlete', \Auth::user()->id)
+        $results = Result::where('result_athlete', $user_id)
             ->where('result_time', '<>', 0)
             ->get();
 
@@ -132,8 +140,9 @@ class ResultAnalyzerActiveRecord implements IResultAnalyzer
     }
 
     /**
-     * Gets the result ID of a specified Result object.
-     * @param $results mixed
+     * Gets the result IDs of each element of a specified Result collection.
+     *
+     * @param $results array
      * @return mixed
      */
     public function getResultsId($results)
@@ -142,8 +151,6 @@ class ResultAnalyzerActiveRecord implements IResultAnalyzer
          * @var Result[] $results
          */
         $ids = $results->pluck('result_id');
-
-        dump($ids);
         return $ids;
     }
 

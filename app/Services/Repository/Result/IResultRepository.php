@@ -16,10 +16,28 @@ namespace App\Services\Repository\Result {
      */
     interface IResultRepository
     {
+        /**
+         * Gets all the results of a specific competition.
+         *
+         * @param $competition
+         * @return mixed
+         */
         public function getCompetitionResults($competition);
 
+        /**
+         * Gets every results of a specific athlete.
+         *
+         * @param $athlete
+         * @return mixed
+         */
         public function getAthleteResults($athlete);
 
+        /**
+         * Finds a result by its ID.
+         *
+         * @param $result_id
+         * @return mixed
+         */
         public function getResultById($result_id);
 
         // TODO: Create more repo methods.
