@@ -26,14 +26,16 @@ class ResultRepoDoctrine extends DoctrineService implements IResultRepository
 
     public function getAthleteResults($athlete)
     {
-            $builder = $this->em->createQueryBuilder();
-            $query = $builder->select('r"')
-                ->from('App\Entities\Result', 'r')
-                ->where('r.result_athlete = :athlete')
-                ->setParameter('athlete', $athlete)
-                ->getQuery();
+        $qb = $this->em->createQueryBuilder();
 
-            return $query->getResult();
+        $query = $qb->select('r')
+            ->from('App\Entities\Result', 'r')
+            ->join('r.result_athlete', 'a')
+            ->where('a.id = :user_id AND r.result_time > 0')
+            ->setParameter('user_id', $athlete)
+            ->getQuery();
+
+        return $query->getResult();
     }
 
     public function getResultById($result_id)

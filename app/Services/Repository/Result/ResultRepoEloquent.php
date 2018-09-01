@@ -10,6 +10,7 @@ namespace App\Services\Repository\Result;
 
 
 use App\Result;
+use App\User;
 
 class ResultRepoEloquent implements IResultRepository
 {
@@ -18,9 +19,13 @@ class ResultRepoEloquent implements IResultRepository
         // TODO: Implement getCompetitionResults() method.
     }
 
+    /**
+     * @param $athlete int
+     * @return mixed
+     */
     public function getAthleteResults($athlete)
     {
-        // TODO: Implement getAthleteResults() method.
+        return Result::where( [ [ 'result_athlete', '=', $athlete ],[ 'result_time', '>', 0 ] ] )->get();
     }
 
     public function getResultById($result_id)

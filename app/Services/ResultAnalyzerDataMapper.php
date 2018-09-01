@@ -114,15 +114,7 @@ class ResultAnalyzerDataMapper extends DoctrineService implements IResultAnalyze
      */
     public function getResultsOfUser($user_id)
     {
-        $qb = $this->em->createQueryBuilder();
-        $query = $qb->select('r')
-            ->from('App\Entities\Result', 'r')
-            ->join('r.result_athlete', 'a')
-            ->where('a.id = :user_id AND r.result_time > 0')
-            ->setParameter('user_id', $user_id)
-            ->getQuery();
-
-        return $query->getResult();
+        return $this->getResultRepository()->getAthleteResults($user_id);
     }
 
     /**
@@ -151,7 +143,7 @@ class ResultAnalyzerDataMapper extends DoctrineService implements IResultAnalyze
     }
 
     /**
-     * @return EntityRepository
+     * @return ResultRepoDoctrine
      */
     public function getResultRepository()
     {
