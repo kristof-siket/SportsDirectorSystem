@@ -11,7 +11,7 @@ use Illuminate\Http\Request;
 class RunalyzerController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Loads the index page of the run analyzer module, all possible results are listed.
      *
      * @param IResultAnalyzer $resultAnalyzer
      * @return \Illuminate\Http\Response
@@ -20,15 +20,13 @@ class RunalyzerController extends Controller
     {
         $results = $resultAnalyzer->getResultRepository()->getAthleteResults(\Auth::id());
 
-        dump($results);
-
         $ids = $resultAnalyzer->getResultsId($results);
 
         return view('runalyzer.index', ['results' => $results, 'ids' => $ids]);
     }
 
     /**
-     * Create the sample data for the race data analysis.
+     * Create the sample pseudo-random data for the race data analysis.
      *
      * @param IResultAnalyzer $resultAnalyzer
      * @return \Illuminate\Http\Response
@@ -45,6 +43,7 @@ class RunalyzerController extends Controller
 
     /**
      * Displays the output analysis according to the specified settings.
+     *
      * @param Request $request
      * @param IResultAnalyzer $resultAnalyzer
      * @return \Illuminate\Http\Response
@@ -52,7 +51,6 @@ class RunalyzerController extends Controller
     public function show(Request $request, IResultAnalyzer $resultAnalyzer)
     {
         $resultRepo = $resultAnalyzer->getResultRepository();
-
         $result = $resultRepo->getResultById($request->input('result'));
 
         if ($request->input('analysis_type') == 'graph')
@@ -66,44 +64,7 @@ class RunalyzerController extends Controller
         else
         {
             $stats = $resultAnalyzer->getStatistics($result);
-
-            dump(json_encode($stats));
-
             return view('runalyzer.stats', ['stats' => $stats]);
         }
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
     }
 }
