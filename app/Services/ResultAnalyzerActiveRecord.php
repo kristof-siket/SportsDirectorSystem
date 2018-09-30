@@ -175,8 +175,6 @@ class ResultAnalyzerActiveRecord implements IResultAnalyzer
         $tempodata = $this->getFullTempoData(0.5, $result);
         $pulsedata = $this->getFullPulseData($result);
 
-        dump($pulsedata);
-
         $pulsedata = array_filter($pulsedata);
         $tempodata = array_filter($tempodata);
 
