@@ -2,10 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\AnalyzerResult;
 use App\Result;
 use App\Services\Interfaces\IResultAnalyzer;
-use App\User;
 use Illuminate\Http\Request;
 
 class RunalyzerController extends Controller
@@ -18,9 +16,9 @@ class RunalyzerController extends Controller
      */
     public function index(IResultAnalyzer $resultAnalyzer)
     {
-        $results = $resultAnalyzer->getResultRepository()->getAthleteResults(\Auth::id());
+        $results = $resultAnalyzer->getResultRepository()->getResultsOfUser(\Auth::id());
 
-        $ids = $resultAnalyzer->getResultsId($results);
+        $ids = $resultAnalyzer->getResultRepository()->getResultsId($results);
 
         return view('runalyzer.index', ['results' => $results, 'ids' => $ids]);
     }
@@ -55,8 +53,8 @@ class RunalyzerController extends Controller
 
         if ($request->input('analysis_type') == 'graph')
         {
-            $pulses = $resultAnalyzer->getFullPulseData($result);
-            $tempos = $resultAnalyzer->getFullTempoData(0.5, $result);
+            $pulses = $resultRepo->getFullPulseData($result);
+            $tempos = $resultRepo->getFullTempoData(0.5, $result);
 
             return view('runalyzer.chart', ['pulses' => $pulses, 'tempos' => $tempos]);
         }
