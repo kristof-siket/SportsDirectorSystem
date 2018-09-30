@@ -25,14 +25,6 @@ namespace App\Services\Repository\Result {
         public function getCompetitionResults($competition);
 
         /**
-         * Gets every results of a specific athlete.
-         *
-         * @param $athlete
-         * @return mixed
-         */
-        public function getAthleteResults($athlete);
-
-        /**
          * Finds a result by its ID.
          *
          * @param $result_id
@@ -40,6 +32,45 @@ namespace App\Services\Repository\Result {
          */
         public function getResultById($result_id);
 
-        // TODO: Create more repo methods.
+        /**
+         * Gets every results of a specified user.
+         *
+         * @param $user_id int
+         * @return mixed
+         */
+        public function getResultsOfUser($user_id);
+
+        /**
+         * Gets the full set of pulse data from the analyzer results.
+         *
+         * @param mixed $result
+         * @return mixed
+         */
+        public function getFullPulseData($result);
+
+        /**
+         * Gets the full set of kilometers data from the analyzer results.
+         *
+         * @param mixed $result
+         * @return mixed
+         */
+        public function getFullKilometerData($result);
+
+        /**
+         * Calculates the athlete's tempo (km/h) for every timestamps
+         *
+         * @param float $sampleRate
+         * @param mixed $result
+         * @return mixed
+         */
+        public function getFullTempoData(float $sampleRate, $result);
+
+        /**
+         * Gets the result ID of a specified Result object.
+         *
+         * @param $results mixed
+         * @return mixed
+         */
+        public function getResultsId($results);
     }
 }
