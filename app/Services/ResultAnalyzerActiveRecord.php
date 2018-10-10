@@ -9,6 +9,7 @@
 namespace App\Services;
 
 use App\AnalyzerResult;
+use App\Competition;
 use App\Result;
 use App\Services\Interfaces\IResultAnalyzer;
 use App\Services\Repository\Result\ResultRepoEloquent;
@@ -29,10 +30,11 @@ class ResultAnalyzerActiveRecord implements IResultAnalyzer
      */
     public function initializeAnalyzerResults(float $sampleRate, $result)
     {
-        $results = AnalyzerResult::all();
+        ini_set('memory_limit','1G');
+        $results = AnalyzerResult::where(['aresult_result' => $result]);
 
-        if ($results->isNotEmpty()) {
-            AnalyzerResult::truncate();
+        if (count($results) > 0) {
+            $results->delete();
         }
 
         $duration = $result->result_time;
@@ -112,5 +114,16 @@ class ResultAnalyzerActiveRecord implements IResultAnalyzer
             'max_tempo' => $maxtempo);
 
         return $statistics;
+    }
+
+    /**
+     * Gets summarized statistics of given competition (global stats).
+     *
+     * @param $competition Competition
+     * @return mixed
+     */
+    public function getOverallCompetitionStatistics($competition)
+    {
+        // TODO: Implement getOverallCompetitionStatistics() method.
     }
 }

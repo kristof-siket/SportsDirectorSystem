@@ -22,6 +22,7 @@ abstract class DoctrineService extends EntityRepository
 
     public function __construct($em, Mapping\ClassMetadata $class)
     {
+        $this->em = $em;
         parent::__construct($em, $class);
     }
 }

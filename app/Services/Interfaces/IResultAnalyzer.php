@@ -41,4 +41,11 @@ interface IResultAnalyzer
      */
     public function getStatistics($result);
 
+    /**
+     * Gets summarized statistics of given competition (global stats).
+     *
+     * @param $competition
+     * @return mixed
+     */
+    public function getOverallCompetitionStatistics($competition);
 }
