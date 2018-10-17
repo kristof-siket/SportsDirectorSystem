@@ -35,7 +35,7 @@
                                             @foreach ($competitions as $comp)
                                                 <a href="#" class="list-group-item list-group-item-action flex-column align-items-start">
                                                     <div class="d-flex w-100 justify-content-between">
-                                                        <h5 class="mb-1">{!! $comp->comp_name !!}</h5>
+                                                        <h4 class="text-primary mb-1">{!! $comp->comp_name !!}</h4>
                                                         <small>{!! \Carbon\Carbon::parse($comp->comp_date)->format('h:m d/M/Y') !!}</small>
                                                     </div>
                                                     <p class="mb-1">{!! $comp->distance_name !!}</p>

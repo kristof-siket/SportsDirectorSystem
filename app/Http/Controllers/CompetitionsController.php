@@ -8,8 +8,6 @@ use App\Distance;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Input;
-use Validator;
-use Symfony\Component\CssSelector\XPath\Extension\CombinationExtension;
 
 class CompetitionsController extends Controller
 {
@@ -20,6 +18,9 @@ class CompetitionsController extends Controller
      */
     public function index()
     {
+        if (!\Auth::check()) {
+            return redirect()->route('login');
+        }
         $comps = \DB::table('competitions')
             ->orderBy('competitions.comp_date', 'desc')
             ->get();

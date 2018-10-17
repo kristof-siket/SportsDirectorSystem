@@ -12,9 +12,13 @@ class ResultsController extends Controller
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
+     * @param $comp_id int
      */
     public function index($comp_id)
     {
+        if (!\Auth::check()) {
+            return redirect()->route('login');
+        }
         $this_results = Result::where('result_competition', $comp_id)
             ->orderBy('result_time', 'desc')
             ->get();
