@@ -20,7 +20,9 @@ class CompetitionsController extends Controller
      */
     public function index()
     {
-        $comps = Competition::all();
+        $comps = \DB::table('competitions')
+            ->orderBy('competitions.comp_date', 'desc')
+            ->get();
 
         return view('competitions.index', ['competitions' => $comps]);
     }

@@ -11,15 +11,22 @@
             <h3 class="panel-title">Recent competitions you can enter</h3>
         </div>
         <div class="panel-body">
+            <a href="{{ route('competitions.create') }}" class="btn btn-success btn-lg">New Event</a>
+        </div>
+        <div class="panel-body  pre-scrollable">
             <div class="list-group">
-                @foreach($competitions as $competition)
-                    <p class="list-group-item col-md-12">
-                        <a href="{!! route('competitions.show', ['comp_id' => $competition->comp_id]) !!}" class="list-group-item-text">{!! $competition->comp_name !!}</a>
-                        <a href="{!!  route('results.index', ['comp_id' => $competition->comp_id]) !!}" class="btn btn-info col-md-12">See competitors</a>
-                    </p>
+                @foreach ($competitions as $comp)
+
+                    <div  class="list-group-item list-group-item-action flex-column align-items-start">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h5 class="mb-1">{!! $comp->comp_name !!}</h5>
+                            <small>{!! \Carbon\Carbon::parse($comp->comp_date)->format('h:m d/M/Y') !!}</small>
+                        </div>
+                        <a href="{{route('competitions.show', ['comp_id' => $comp->comp_id])}}" class="btn btn-sm btn-primary">See details</a>
+                    </div>
+
                 @endforeach
             </div>
-            <a href="{{ route('competitions.create') }}" class="btn btn-success">New Event</a>
         </div>
     </div>
 @endsection

@@ -29,7 +29,7 @@
                         <div class="col-md-8">
                             <div class="panel panel-info">
                                 <div class="panel-heading">My Events</div>
-                                <div class="panel-body">
+                                <div class="panel-body pre-scrollable">
                                     @if (count($competitions) > 0)
                                         <div class="list-group">
                                             @foreach ($competitions as $comp)
@@ -53,7 +53,7 @@
                         <div class="col-md-2">
                             <div class="panel panel-info">
                                 <div class="panel-heading">Training plans</div>
-                                    <div    class="panel-body">
+                                    <div class="panel-body pre-scrollable">
                                         @if (count($trainingPlans) == 0)
                                             <b class="text-info">No training plans created yet!</b>
                                         @else
