@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Competition;
+use App\ModelInterfaces\IResult;
 use App\Result;
 use Illuminate\Http\Request;
 
@@ -19,6 +20,10 @@ class ResultsController extends Controller
         if (!\Auth::check()) {
             return redirect()->route('login');
         }
+
+        /**
+         * @var $this_results IResult[]
+         */
         $this_results = Result::where('result_competition', $comp_id)
             ->orderBy('result_time', 'desc')
             ->get();

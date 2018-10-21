@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Competition;
 use App\CompetitionsDistances;
 use App\Distance;
+use App\ModelInterfaces\ICompetition;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Input;
@@ -21,6 +22,10 @@ class CompetitionsController extends Controller
         if (!\Auth::check()) {
             return redirect()->route('login');
         }
+
+        /**
+         * @var $comps ICompetition
+         */
         $comps = \DB::table('competitions')
             ->orderBy('competitions.comp_date', 'desc')
             ->get();
@@ -55,7 +60,7 @@ class CompetitionsController extends Controller
                 "comp_location" => $request->input('comp_location', 'Budapest'),
             ]);
             if ($competition) {
-                return redirect()->route('competitions.addDistances', ['comp_id' => $competition->comp_id]);
+                return redirect()->route('competitions.addDistances', ['comp_id' => $competition->getCompId()]);
             }
             else {
                 return redirect()->route('competitions.index');

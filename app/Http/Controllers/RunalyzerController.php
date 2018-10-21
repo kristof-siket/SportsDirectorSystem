@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\ModelInterfaces\IResult;
 use App\Result;
 use App\Services\Interfaces\IResultAnalyzer;
 use Illuminate\Http\Request;
@@ -23,9 +24,7 @@ class RunalyzerController extends Controller
         //service calls
         $results = $resultAnalyzer->getResultRepository()->getResultsOfUser(\Auth::id());
 
-        $ids = $resultAnalyzer->getResultRepository()->getResultsId($results);
-
-        return view('runalyzer.index', ['results' => $results, 'ids' => $ids]);
+        return view('runalyzer.index', ['results' => $results]);
     }
 
     /**
@@ -53,7 +52,15 @@ class RunalyzerController extends Controller
      */
     public function show(Request $request, IResultAnalyzer $resultAnalyzer)
     {
+        if (!$this->validate($request, ['result' => 'required'])) {
+            return back()->with(['error' => 'Please, select a result to analyze.']);
+        }
+
         $resultRepo = $resultAnalyzer->getResultRepository();
+
+        /**
+         * @var IResult $result
+         */
         $result = $resultRepo->getResultById($request->input('result'));
 
         // Switch services according to selected analysis type.
@@ -70,12 +77,14 @@ class RunalyzerController extends Controller
                 {
                     $stats = $resultAnalyzer->getStatistics($result);
                     return view('runalyzer.stats', ['stats' => $stats])
-                        ->with(['success' => 'Race stats calculated successfully.']);
+                        ->with(['success' => 'Personal statistics calculated successfully.']);
                 }
             case "race_stat":
                 {
-                    //TODO: get the comp from the repo (or as parameter)
-                    //TODO: call the service here
+                    $race_stats = $resultAnalyzer->getOverallCompetitionStatistics($result->getResultCompetition());
+                    dump($race_stats);
+                    return view("runalyzer.race-stats", ['race_stats' => $race_stats, 'competition' => $result->getResultCompetition()])
+                        ->with(['success' => 'Overall competition statistics calculated successfully.']);
                 }
             default:
                 return back()->with(['error' => 'No service selected!']);

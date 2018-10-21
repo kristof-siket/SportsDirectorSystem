@@ -8,6 +8,9 @@
 
 namespace App\Services\Repository\Result {
 
+    use App\ModelInterfaces\ICompetition;
+    use App\ModelInterfaces\IResult;
+
     /**
      * Interface IResultRepository
      * @package App\Services\Repository
@@ -19,16 +22,16 @@ namespace App\Services\Repository\Result {
         /**
          * Gets all the results of a specific competition.
          *
-         * @param $competition
-         * @return mixed
+         * @param $competition ICompetition
+         * @return IResult[]
          */
         public function getCompetitionResults($competition);
 
         /**
          * Finds a result by its ID.
          *
-         * @param $result_id
-         * @return mixed
+         * @param $result_id int
+         * @return IResult
          */
         public function getResultById($result_id);
 
@@ -36,14 +39,14 @@ namespace App\Services\Repository\Result {
          * Gets every results of a specified user.
          *
          * @param $user_id int
-         * @return mixed
+         * @return IResult[]
          */
         public function getResultsOfUser($user_id);
 
         /**
          * Gets the full set of pulse data from the analyzer results.
          *
-         * @param mixed $result
+         * @param IResult $result
          * @return mixed
          */
         public function getFullPulseData($result);
@@ -51,7 +54,7 @@ namespace App\Services\Repository\Result {
         /**
          * Gets the full set of kilometers data from the analyzer results.
          *
-         * @param mixed $result
+         * @param IResult $result
          * @return mixed
          */
         public function getFullKilometerData($result);
@@ -60,7 +63,7 @@ namespace App\Services\Repository\Result {
          * Calculates the athlete's tempo (km/h) for every timestamps
          *
          * @param float $sampleRate
-         * @param mixed $result
+         * @param IResult $result
          * @return mixed
          */
         public function getFullTempoData(float $sampleRate, $result);
@@ -68,7 +71,7 @@ namespace App\Services\Repository\Result {
         /**
          * Gets the result ID of a specified Result object.
          *
-         * @param $results mixed
+         * @param $results IResult[]
          * @return mixed
          */
         public function getResultsId($results);

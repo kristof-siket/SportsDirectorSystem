@@ -3,7 +3,6 @@
 namespace App\Providers;
 
 use App\Services\Interfaces\ResultAnalyzerDataMapper;
-use App\Services\ResultAnalyzerActiveRecord;
 use Illuminate\Support\ServiceProvider;
 
 class ResultAnalyzerServiceProvider extends ServiceProvider
@@ -29,8 +28,8 @@ class ResultAnalyzerServiceProvider extends ServiceProvider
     {
         // "Depend on the interface, not the implementation!"
         $this->app->bind('App\Services\Interfaces\IResultAnalyzer', function() {
-           //return new ResultAnalyzerDataMapper(app('em'));
-           return new ResultAnalyzerActiveRecord();
+            return new ResultAnalyzerDataMapper(app('em'));
+            //return new ResultAnalyzerActiveRecord();
         });
     }
 
