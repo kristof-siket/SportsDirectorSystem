@@ -17,7 +17,6 @@ use App\Entities\Team;
 use App\Entities\User;
 use App\Services\ORMServices\DoctrineService;
 use App\Services\Repository\Result\ResultRepoDoctrine;
-use Doctrine\ORM\QueryBuilder;
 
 class ResultAnalyzerDataMapper extends DoctrineService implements IResultAnalyzer
 {
@@ -240,31 +239,31 @@ class ResultAnalyzerDataMapper extends DoctrineService implements IResultAnalyze
         $query = $qb->select
         ("
             CONCAT(u.last_name,' ', u.first_name) as Name,
-            r.result_id as ResultId,
-            (avg(a.aresult_kilometers / a.aresult_timestamp)*60*60) / avg(a.aresult_pulse) as Indicator
+            avg(a.aresult_pulse) as AveragePulse,
+            (avg(a.aresult_kilometers / a.aresult_timestamp)*60*60) as AverageTempo,
+            (avg(a.aresult_pulse)) / (avg(a.aresult_kilometers / a.aresult_timestamp)*60*60) as Fitness
         ")
             ->from(AnalyzerResult::class, 'a')
-            ->from(User::class, 'u')
-            ->from(Result::class, 'r')
-            ->from(Distance::class, 'd')
-            ->from(CompetitionDistance::class, 'cd')
+            ->join(User::class, 'u')
+            ->join(CompetitionDistance::class, 'cd')
             ->join('cd.distance', 'cdd')
             ->join('cd.competition', 'cdc')
+            ->join(Distance::class, 'd')
+            ->join(Result::class, 'r')
             ->where
-            ("
-                a.aresult_result = r.result_athlete AND
-                r.result_athlete = u.id AND
-                r.result_competition = :comp_id AND
-                r.result_distance = cdd.distance_id AND
-                cdc.comp_id = :comp_id AND
-                cdd.distance_id = d.distance_id   
-            ")
-            ->groupBy('ResultId')
-            ->orderBy('Indicator', 'desc')
-            ->setParameters(['comp_id' =>$competition->getCompId()])
-            ->getQuery();
+            ('a.aresult_result = r.result_id AND
+                        r.result_athlete = u.id AND
+                        r.result_distance = cdd.distance_id AND
+                        cdc.comp_id = :comp_id AND
+                        d.distance_id = cdd.distance_id AND                                                
+                        r.result_competition = :comp_id')
+            ->groupBy('Name')
+            ->orderBy('Fitness', 'DESC')
+            ->setParameters(['comp_id' => $competition->getCompId()])->getQuery();
 
-        return $query->getArrayResult();
+        $bestFittness = $query->getArrayResult()[0];
+
+        return $bestFittness;
     }
     //endregion
 }

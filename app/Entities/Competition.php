@@ -8,15 +8,15 @@
 
 namespace App\Entities;
 
-
-use Doctrine\ORM\Mapping AS ORM;
+use App\ModelInterfaces\ICompetition;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity
  * @ORM\Table(name="competitions")
  */
-class Competition
+class Competition implements ICompetition
 {
     /**
      * @ORM\Id

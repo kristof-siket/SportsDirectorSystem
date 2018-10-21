@@ -19,7 +19,6 @@
                 @for ($i = 0; $i < count($results); $i++)
                     <option value="{{ $ids[$i] }}">{{ $results[$i] }}</option>
                 @endfor
-
             </select>
 
             <br>

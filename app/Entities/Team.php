@@ -9,13 +9,14 @@
 namespace App\Entities;
 
 
+use App\ModelInterfaces\ITeam;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity
  * @ORM\Table(name="teams")
  */
-class Team
+class Team implements ITeam
 {
     /**
      * @var int $team_id

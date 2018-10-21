@@ -16,6 +16,11 @@ class RunalyzerController extends Controller
      */
     public function index(IResultAnalyzer $resultAnalyzer)
     {
+        if (!\Auth::check()) {
+            return redirect()->route('login');
+        }
+
+        //service calls
         $results = $resultAnalyzer->getResultRepository()->getResultsOfUser(\Auth::id());
 
         $ids = $resultAnalyzer->getResultRepository()->getResultsId($results);
@@ -32,7 +37,7 @@ class RunalyzerController extends Controller
     public function create(IResultAnalyzer $resultAnalyzer)
     {
         $result = Result::find(25); // TODO: refactor this hard-coding
-        ini_set('max_execution_time', 500);
+        ini_set('max_execution_time', 1000);
 
         $resultAnalyzer->initializeAnalyzerResults(0.5, $result);
 
@@ -51,18 +56,29 @@ class RunalyzerController extends Controller
         $resultRepo = $resultAnalyzer->getResultRepository();
         $result = $resultRepo->getResultById($request->input('result'));
 
-        if ($request->input('analysis_type') == 'graph')
-        {
-            $pulses = $resultRepo->getFullPulseData($result);
-            $tempos = $resultRepo->getFullTempoData(0.5, $result);
+        // Switch services according to selected analysis type.
+        switch ($request->input('analysis_type')) {
+            case  "graph" :
+                {
+                    $pulses = $resultRepo->getFullPulseData($result);
+                    $tempos = $resultRepo->getFullTempoData(0.5, $result);
 
-            return view('runalyzer.chart', ['pulses' => $pulses, 'tempos' => $tempos]);
-        }
-
-        else
-        {
-            $stats = $resultAnalyzer->getStatistics($result);
-            return view('runalyzer.stats', ['stats' => $stats]);
+                    return view('runalyzer.chart', ['pulses' => $pulses, 'tempos' => $tempos])
+                        ->with(['success' => 'Analysis graphs created successfully.']);
+                }
+            case "stat":
+                {
+                    $stats = $resultAnalyzer->getStatistics($result);
+                    return view('runalyzer.stats', ['stats' => $stats])
+                        ->with(['success' => 'Race stats calculated successfully.']);
+                }
+            case "race_stat":
+                {
+                    //TODO: get the comp from the repo (or as parameter)
+                    //TODO: call the service here
+                }
+            default:
+                return back()->with(['error' => 'No service selected!']);
         }
     }
 }
