@@ -63,13 +63,13 @@
                                     <h5 class="card-title">Athlete: {!! $race_stats['best_fitness']['Name'] !!}</h5>
                                     <p class="card-text">Average
                                         pulse: {!! number_format($race_stats['best_fitness']['AveragePulse'], 2, '.', ','); !!}
-                                        km/h</p>
+                                        bpm</p>
                                     <p class="card-text">Average
                                         tempo: {!! number_format($race_stats['best_fitness']['AverageTempo'], 2, '.', ','); !!}
                                         km/h</p>
                                     <p class="card-text text-primary">Value (After
                                         division): {!! number_format($race_stats['best_fitness']['Fitness'], 2, '.', ','); !!}
-                                        km/h</p>
+                                    </p>
                                 </div>
                             </div>
                             <hr color="black">

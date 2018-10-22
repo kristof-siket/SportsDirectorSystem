@@ -149,10 +149,7 @@ class User implements IUser
         $this->password = $password;
     }
 
-    /**
-     * @return Team
-     */
-    public function getTeam(): ITeam
+    public function getTeam(): ?ITeam
     {
         return $this->team;
     }

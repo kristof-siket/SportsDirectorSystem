@@ -82,7 +82,6 @@ class RunalyzerController extends Controller
             case "race_stat":
                 {
                     $race_stats = $resultAnalyzer->getOverallCompetitionStatistics($result->getResultCompetition());
-                    dump($race_stats);
                     return view("runalyzer.race-stats", ['race_stats' => $race_stats, 'competition' => $result->getResultCompetition()])
                         ->with(['success' => 'Overall competition statistics calculated successfully.']);
                 }

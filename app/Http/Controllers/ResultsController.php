@@ -25,9 +25,12 @@ class ResultsController extends Controller
          * @var $this_results IResult[]
          */
         $this_results = Result::where('result_competition', $comp_id)
-            ->orderBy('result_time', 'desc')
+            ->orderByRaw('result_time = 0')
+            ->orderBy('result_time', 'asc')
+            ->orderBy('result_distance')
+            ->distinct('result_athlete')
             ->get();
-
+        dump($this_results);
         return view('results.index', ['results' => $this_results]);
     }
 

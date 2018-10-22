@@ -10,6 +10,7 @@ namespace App\Services;
 
 use App\AnalyzerResult;
 use App\Competition;
+use App\ModelInterfaces\ICompetition;
 use App\Result;
 use App\Services\Interfaces\IResultAnalyzer;
 use App\Services\Repository\Result\ResultRepoEloquent;
@@ -124,6 +125,54 @@ class ResultAnalyzerActiveRecord implements IResultAnalyzer
      */
     public function getOverallCompetitionStatistics($competition)
     {
-        // TODO: Implement getOverallCompetitionStatistics() method.
+        return
+            [
+                'team_champions' => $this->getBestTeamAverageSpeed($competition),
+                'lowest_avg_pulse' => $this->getLowestAveragePulse($competition),
+                'highest_avg_pulse' => $this->getHighestAveragePulse($competition),
+                'best_fitness' => $this->getBestFitness($competition)
+            ];
+    }
+
+    /**
+     * Gets the best team average speeds in the given competition as a key-value pair array.
+     *
+     * @param ICompetition $competition
+     * @return array
+     */
+    private function getBestTeamAverageSpeed(ICompetition $competition): array
+    {
+
+    }
+
+    /**
+     * Gets the athlete with the lowest average pulse as a key-value array.
+     *
+     * @param $competition ICompetition
+     * @return array
+     */
+    private function getLowestAveragePulse($competition)
+    {
+
+    }
+
+    /**
+     * Gets the athlete with the highest average pulse as a key-value array.
+     *
+     * @param $competition ICompetition
+     * @return array
+     */
+    private function getHighestAveragePulse($competition)
+    {
+    }
+
+    /**
+     * Gets the best average pulse / average tempo value ("best fittness") of a competition.
+     *
+     * @param $competition ICompetition
+     * @return array
+     */
+    private function getBestFitness($competition)
+    {
     }
 }

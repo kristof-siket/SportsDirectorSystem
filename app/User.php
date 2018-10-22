@@ -53,7 +53,7 @@ class User extends Authenticatable implements IUser
 
     public function team()
     {
-        return $this->belongsTo('App\Team'); // it works -> naming convention!
+        return $this->belongsTo('App\Team', 'team_id');
     }
 
     public function results()
@@ -149,7 +149,7 @@ class User extends Authenticatable implements IUser
     /**
      * @return ITeam
      */
-    public function getTeam(): ITeam
+    public function getTeam(): ?ITeam
     {
         return $this->team;
     }

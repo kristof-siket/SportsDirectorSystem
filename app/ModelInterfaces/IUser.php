@@ -61,10 +61,7 @@ interface IUser
      */
     public function setPassword(string $password);
 
-    /**
-     * @return ITeam
-     */
-    public function getTeam(): ITeam;
+    public function getTeam(): ?ITeam;
 
     /**
      * @param ITeam $team

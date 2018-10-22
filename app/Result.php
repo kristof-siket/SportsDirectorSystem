@@ -182,6 +182,10 @@ class Result extends Model implements IResult
      */
     public function getResultTime(): int
     {
+        if ($this->result_time == 0) {
+            return PHP_INT_MAX;
+        }
+
         return $this->result_time;
     }
 
