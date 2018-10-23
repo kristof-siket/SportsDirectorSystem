@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Services\Interfaces\ResultAnalyzerDataMapper;
+use App\Services\ResultAnalyzerActiveRecord;
 use Illuminate\Support\ServiceProvider;
 
 class ResultAnalyzerServiceProvider extends ServiceProvider

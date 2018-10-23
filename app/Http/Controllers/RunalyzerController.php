@@ -52,15 +52,18 @@ class RunalyzerController extends Controller
      */
     public function show(Request $request, IResultAnalyzer $resultAnalyzer)
     {
-        if (!$this->validate($request, ['result' => 'required'])) {
+        // Check if the user is authenticated
+        if (!\Auth::check()) {
+            return redirect()->route('login');
+        } // Check if the user selected any result
+        else if (!$this->validate($request, ['result' => 'required'])) {
             return back()->with(['error' => 'Please, select a result to analyze.']);
         }
 
+        // Get the Results Repository from the Analyzer Service
         $resultRepo = $resultAnalyzer->getResultRepository();
 
-        /**
-         * @var IResult $result
-         */
+        // Get the selected result by its id
         $result = $resultRepo->getResultById($request->input('result'));
 
         // Switch services according to selected analysis type.

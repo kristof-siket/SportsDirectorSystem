@@ -7,6 +7,7 @@ use App\ModelInterfaces\IDistance;
 use App\ModelInterfaces\IResult;
 use App\ModelInterfaces\ISport;
 use App\ModelInterfaces\IUser;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -21,6 +22,8 @@ use Illuminate\Database\Eloquent\Model;
  * @property IDistance[] $distances
  * @property mixed comp_date
  * @property string comp_location
+ * @property int $comp_id
+ * @property ISport comp_sport
  */
 class Competition extends Model implements ICompetition
 {
@@ -139,7 +142,7 @@ class Competition extends Model implements ICompetition
      */
     public function getCompDate()
     {
-        return $this->comp_date;
+        return Carbon::parse($this->comp_date);
     }
 
     /**
