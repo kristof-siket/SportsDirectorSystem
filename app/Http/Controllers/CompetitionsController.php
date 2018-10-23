@@ -5,11 +5,9 @@ namespace App\Http\Controllers;
 use App\Competition;
 use App\CompetitionsDistances;
 use App\Distance;
-use App\User;
+use App\ModelInterfaces\ICompetition;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Input;
-use Validator;
-use Symfony\Component\CssSelector\XPath\Extension\CombinationExtension;
 
 class CompetitionsController extends Controller
 {
@@ -20,7 +18,16 @@ class CompetitionsController extends Controller
      */
     public function index()
     {
-        $comps = Competition::all();
+        if (!\Auth::check()) {
+            return redirect()->route('login');
+        }
+
+        /**
+         * @var $comps ICompetition
+         */
+        $comps = \DB::table('competitions')
+            ->orderBy('competitions.comp_date', 'desc')
+            ->get();
 
         return view('competitions.index', ['competitions' => $comps]);
     }
@@ -48,11 +55,11 @@ class CompetitionsController extends Controller
                 "comp_name" => $request->input('comp_name', 'Új verseny'),
                 "comp_sport" => $request->input('comp_sport'),
                 "comp_date" => $request->input('comp_date', new \DateTime('now')),
-                "comp_promoter" => User::all()->first()->id,
+                "comp_promoter" => \Auth::user()->id,
                 "comp_location" => $request->input('comp_location', 'Budapest'),
             ]);
             if ($competition) {
-                return redirect()->route('competitions.addDistances', ['comp_id' => $competition->comp_id]);
+                return redirect()->route('competitions.addDistances', ['comp_id' => $competition->getCompId()]);
             }
             else {
                 return redirect()->route('competitions.index');

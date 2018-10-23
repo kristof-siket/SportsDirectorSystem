@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\User;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Validator;
+use App\User;
 use Illuminate\Foundation\Auth\RegistersUsers;
+use Illuminate\Support\Facades\Validator;
 
 class RegisterController extends Controller
 {
@@ -27,7 +27,7 @@ class RegisterController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = '/home';
+    protected $redirectTo = '/';
 
     /**
      * Create a new controller instance.
@@ -52,7 +52,7 @@ class RegisterController extends Controller
             'last_name' => 'required|string|max:255',
             'date_of_birth' => 'required|date',
             'location' => 'string|nullable',
-            'email' => 'required|string|email|max:255|unique:users',
+            'email' => 'required|string|email|max:255',
             'password' => 'required|string|min:6|confirmed',
         ]);
     }
@@ -71,7 +71,7 @@ class RegisterController extends Controller
             'email' => $data['email'],
             'location' => $data['location'],
             'date_of_birth' => $data['date_of_birth'],
-            'team_id' => 1, // TODO: solve this hard-coding by make team_id nullable.
+            'team_id' => null,
             'password' => bcrypt($data['password']),
         ]);
     }

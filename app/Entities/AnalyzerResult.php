@@ -9,13 +9,15 @@
 namespace App\Entities;
 
 
+use App\ModelInterfaces\IAnalyzerResult;
+use App\ModelInterfaces\IResult;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity
  * @ORM\Table(name="analyzer_results")
  */
-class AnalyzerResult
+class AnalyzerResult implements IAnalyzerResult
 {
     /**
      * @var int $aresult_id
@@ -67,17 +69,17 @@ class AnalyzerResult
     }
 
     /**
-     * @return Result
+     * @return IResult
      */
-    public function getAresultResult(): Result
+    public function getAresultResult(): IResult
     {
         return $this->aresult_result;
     }
 
     /**
-     * @param Result $aresult_result
+     * @param IResult $aresult_result
      */
-    public function setAresultResult(Result $aresult_result)
+    public function setAresultResult(IResult $aresult_result)
     {
         $this->aresult_result = $aresult_result;
     }

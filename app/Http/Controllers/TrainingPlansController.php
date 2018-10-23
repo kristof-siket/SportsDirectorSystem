@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Competition;
 use App\TrainingPlan;
 use Illuminate\Http\Request;
 
@@ -15,6 +14,9 @@ class TrainingPlansController extends Controller
      */
     public function index()
     {
+        if (!\Auth::check()) {
+            return redirect()->route('login');
+        }
         return view('trainingplan.index');
     }
 

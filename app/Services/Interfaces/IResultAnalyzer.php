@@ -27,47 +27,6 @@ interface IResultAnalyzer
     public function initializeAnalyzerResults(float $sampleRate, $result);
 
     /**
-     * Gets every results of a specified user.
-     *
-     * @param $user_id int
-     * @return mixed
-     */
-    public function getResultsOfUser($user_id);
-
-    /**
-     * Gets the full set of pulse data from the analyzer results.
-     *
-     * @param mixed $result
-     * @return mixed
-     */
-    public function getFullPulseData($result);
-
-    /**
-     * Gets the full set of kilometers data from the analyzer results.
-     *
-     * @param mixed $result
-     * @return mixed
-     */
-    public function getFullKilometerData($result);
-
-    /**
-     * Calculates the athlete's tempo (km/h) for every timestamps
-     *
-     * @param float $sampleRate
-     * @param mixed $result
-     * @return mixed
-     */
-    public function getFullTempoData(float $sampleRate, $result);
-
-    /**
-     * Gets the result ID of a specified Result object.
-     *
-     * @param $results mixed
-     * @return mixed
-     */
-    public function getResultsId($results);
-
-    /**
      * Gets the entity repository for Result entity type.
      *
      * @return IResultRepository
@@ -82,4 +41,11 @@ interface IResultAnalyzer
      */
     public function getStatistics($result);
 
+    /**
+     * Gets summarized statistics of given competition (global stats).
+     *
+     * @param $competition
+     * @return mixed
+     */
+    public function getOverallCompetitionStatistics($competition);
 }

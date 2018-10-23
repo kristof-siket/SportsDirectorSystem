@@ -9,13 +9,15 @@
 namespace App\Entities;
 
 
+use App\ModelInterfaces\ITeam;
+use App\ModelInterfaces\IUser;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity
  * @ORM\Table(name="users")
  */
-class User
+class User implements IUser
 {
     /**
      * @ORM\Id
@@ -147,18 +149,15 @@ class User
         $this->password = $password;
     }
 
-    /**
-     * @return Team
-     */
-    public function getTeam(): Team
+    public function getTeam(): ?ITeam
     {
         return $this->team;
     }
 
     /**
-     * @param Team $team
+     * @param ITeam $team
      */
-    public function setTeam(Team $team)
+    public function setTeam(ITeam $team)
     {
         $this->team = $team;
     }

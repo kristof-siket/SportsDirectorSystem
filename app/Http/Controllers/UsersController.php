@@ -69,7 +69,14 @@ class UsersController extends Controller
      */
     public function update(Request $request, User $user)
     {
-        //
+        $user->team_id = $request->input('user_team');
+        $user->save();
+
+        if ($user) {
+            return redirect()->route('dashboard');
+        }
+
+        return redirect()->back();
     }
 
     /**

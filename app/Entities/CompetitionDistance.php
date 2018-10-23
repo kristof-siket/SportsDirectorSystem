@@ -9,13 +9,16 @@
 namespace App\Entities;
 
 
+use App\ModelInterfaces\ICompetition;
+use App\ModelInterfaces\ICompetitionDistance;
+use App\ModelInterfaces\IDistance;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity
  * @ORM\Table(name="competitions_distances")
  */
-class CompetitionDistance
+class CompetitionDistance implements ICompetitionDistance
 {
     /**
      * @var
@@ -58,34 +61,32 @@ class CompetitionDistance
     /**
      * @return Competition
      */
-    public function getCompetition(): Competition
+    public function getCompetition(): ICompetition
     {
         return $this->competition;
     }
 
     /**
-     * @param Competition $competition
+     * @param ICompetition $competition
      */
-    public function setCompetition(Competition $competition)
+    public function setCompetition(ICompetition $competition)
     {
         $this->competition = $competition;
     }
 
     /**
-     * @return Distance
+     * @return IDistance
      */
-    public function getDistance(): Distance
+    public function getDistance(): IDistance
     {
         return $this->distance;
     }
 
     /**
-     * @param Distance $distance
+     * @param IDistance $distance
      */
-    public function setDistance(Distance $distance)
+    public function setDistance(IDistance $distance)
     {
         $this->distance = $distance;
     }
-
-
 }

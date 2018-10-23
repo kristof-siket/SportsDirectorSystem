@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Competition;
-use App\Result;
-use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Http\Request;
+
+use App\Team;
+use App\TrainingPlan;
+use Illuminate\Support\Facades\DB;
 
 class HomeController extends Controller
 {
@@ -26,15 +26,22 @@ class HomeController extends Controller
      */
     public function index()
     {
-        $user_competitions = new Collection();
+        //TODO: Here it is not too serious, but it would be better to put these logic to services, e.g. one overall common CRUD service.
+        $user_competitions = DB::table('competitions')
+            ->join('results', 'results.result_competition', '=', 'competitions.comp_id')
+            ->join('competitions_distances', 'competitions_distances.competition_id', '=', 'competitions.comp_id')
+            ->join('distances', 'distances.distance_id', '=', 'competitions_distances.distance_id')
+            ->whereRaw('results.result_athlete = ? AND results.result_distance = distances.distance_id', [\Auth::id()])
+            ->distinct()
+            ->get();
 
-        $results = Result::where('result_athlete', \Auth::user()->id);
 
-        foreach ($results as $r)
-        {
-            $user_competitions->push(Competition::find($r->comp_id));
+        $trainingPlans = TrainingPlan::where('tp_creator', \Auth::id())->get();
+        $teams = Team::all();
+
+        if (count($trainingPlans) == 0) {
+            $trainingPlans = [];
         }
-
-        return view('dashboard', ['competitions' => $user_competitions]);
+        return view('dashboard', ['competitions' => $user_competitions->toArray(), 'trainingPlans' => $trainingPlans, 'teams' => $teams]);
     }
 }
