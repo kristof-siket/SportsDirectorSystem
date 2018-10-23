@@ -29,6 +29,7 @@ Route::resource('runalyzer', 'RunalyzerController');
  */
 Route::get('/competitions/{comp_id}/distances', 'CompetitionsController@addDistances')->name('competitions.addDistances');
 Route::post('/competitions/{comp_id}/savedistances', 'CompetitionsController@storeDistances')->name('competitions.storeDistances');
+Route::put('/results/{comp_id}/{res_id}', 'ResultsController@update')->name('results.update');
 Route::get('/results/{comp_id}', 'ResultsController@index')->name('results.index');
 Route::get('/competitions/{comp_id}/enter/{dist_id}', 'ResultsController@enter')->name('results.enter');
 Route::get('/runalyzer/show', 'RunalyzerController@show')->name('runalyzer.show');

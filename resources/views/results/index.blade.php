@@ -42,7 +42,19 @@
                                             <td>{{ $result->getResultAthlete()->getFirstName() }} {{ $result->getResultAthlete()->getLastName()}}</td>
                                             <td>{{ $result->getResultAthlete()->getTeam() == null ? "Freelancer Competitor" : $result->getResultAthlete()->getTeam()->getTeamName()}}</td>
                                             <td>{{ $result->getResultDistance()->getDistanceName() }}</td>
-                                            <td>{!! ($result->getResultTime() == PHP_INT_MAX) ? "No time recorded" : gmdate('H:i:s', $result->getResultTime()) !!}</td>
+                                            <td>
+                                                @if($result->getResultTime() > 0)
+                                                    {!! gmdate('H:i:s', $result->getResultTime()) !!}
+                                                @else
+                                                    <div class="form-group form-group-sm form-inline">
+                                                        {!! Form::open(['route' => ['results.update', $result->getResultCompetition()->getCompId(), $result->getResultId()], 'method' => 'PUT']) !!}
+                                                        <input type="time" class="form-control " step="1"
+                                                               name="result_time">
+                                                        {!! Form::submit('Set time', ['class' => 'btn btn-primary btn-sm']); !!}
+                                                        {!! Form::close() !!}
+                                                    </div>
+                                                @endif
+                                            </td>
                                         </tr>
                                     @endforeach
                                     </tbody>

@@ -120,9 +120,16 @@ class ResultsController extends Controller
      * @param  \App\Result  $result
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Result $result)
+    public function update($comp_id, $res_id, Request $request)
     {
-        //
+        /**
+         * @var $result Result
+         */
+        $result = Result::find($res_id);
+        $result->setResultTime(strtotime($request->input('result_time')));
+        $result->save();
+
+        return redirect()->back();
     }
 
     /**
