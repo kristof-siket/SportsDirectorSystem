@@ -6,7 +6,6 @@ use App\Competition;
 use App\CompetitionsDistances;
 use App\Distance;
 use App\ModelInterfaces\ICompetition;
-use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Input;
 
@@ -56,7 +55,7 @@ class CompetitionsController extends Controller
                 "comp_name" => $request->input('comp_name', 'Új verseny'),
                 "comp_sport" => $request->input('comp_sport'),
                 "comp_date" => $request->input('comp_date', new \DateTime('now')),
-                "comp_promoter" => User::all()->first()->id,
+                "comp_promoter" => \Auth::user()->id,
                 "comp_location" => $request->input('comp_location', 'Budapest'),
             ]);
             if ($competition) {

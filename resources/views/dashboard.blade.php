@@ -23,6 +23,32 @@
                                         <a href="#"><li class="list-group-item list-group-item-text"><span class="glyphicon glyphicon-cog"></span> Edit Profile</li></a>
                                         <a  href="#"><li class="list-group-item list-group-item-text"><span class="glyphicon glyphicon-trash"></span> Unregister</li></a>
                                     </ul>
+                                    @if (is_null(Auth::user()->getTeam()))
+                                        <div class="form-group form-group-sm form-inline">
+                                            <form title="Set your team" name="set_team" method="post"
+                                                  action="{{ route('users.update', ['user' => Auth::user()]) }}">
+                                                <input type="hidden" name="_method" value="PUT">
+                                                <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                                                <fieldset>
+                                                    <legend class="text-muted">Set your team</legend>
+                                                    <div class="dropdown" style="box-sizing: padding-box">
+                                                        <select style="max-width: 100%" name="user_team"
+                                                                class="form-control">
+                                                            <option style="-moz-white-space: pre-wrap; -o-white-space: pre-wrap; white-space: pre-wrap; overflow: hidden; text-overflow: ellipsis"
+                                                                    value="null">No team
+                                                            </option>
+                                                            @foreach ($teams as $team)
+                                                                <option style="-moz-white-space: pre-wrap; -o-white-space: pre-wrap; white-space: pre-wrap; overflow: hidden; text-overflow: ellipsis"
+                                                                        value="{{ $team->getTeamId() }}">{{ $team->getTeamName() }}</option>
+                                                            @endforeach
+                                                        </select>
+                                                    </div>
+                                                    <input type="submit" class="form-control btn btn-primary btn-xs"
+                                                           value="Save">
+                                                </fieldset>
+                                            </form>
+                                        </div>
+                                    @endif
                                 </div>
                             </div>
                         </div>

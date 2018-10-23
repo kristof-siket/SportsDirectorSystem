@@ -3,9 +3,8 @@
 namespace App\Http\Controllers;
 
 
-use App\Competition;
+use App\Team;
 use App\TrainingPlan;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
 
 class HomeController extends Controller
@@ -38,10 +37,11 @@ class HomeController extends Controller
 
 
         $trainingPlans = TrainingPlan::where('tp_creator', \Auth::id())->get();
+        $teams = Team::all();
 
         if (count($trainingPlans) == 0) {
             $trainingPlans = [];
         }
-        return view('dashboard', ['competitions' => $user_competitions->toArray(), 'trainingPlans' => $trainingPlans]);
+        return view('dashboard', ['competitions' => $user_competitions->toArray(), 'trainingPlans' => $trainingPlans, 'teams' => $teams]);
     }
 }

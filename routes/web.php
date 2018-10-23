@@ -23,6 +23,7 @@ Route::get('/dashboard', 'HomeController@index')->name('dashboard');
 Route::resource('competitions', 'CompetitionsController', ['parameters' => ['id' => 'comp_id']]);
 Route::resource('training_plans', 'TrainingPlansController');
 Route::resource('runalyzer', 'RunalyzerController');
+Route::resource('users', 'UsersController');
 
 /*
  * "Resource-like" routes to define some special actions
