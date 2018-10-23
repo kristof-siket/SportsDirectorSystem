@@ -9,13 +9,18 @@
 namespace App\Entities;
 
 
+use App\ModelInterfaces\ICompetition;
+use App\ModelInterfaces\IDistance;
+use App\ModelInterfaces\IResult;
+use App\ModelInterfaces\ISport;
+use App\ModelInterfaces\IUser;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  *  @ORM\Entity(repositoryClass="App\Services\Repository\Result\ResultRepoDoctrine")
  * @ORM\Table(name="results")
  */
-class Result
+class Result implements IResult
 {
     /**
      * @ORM\Column(type="integer")
@@ -26,21 +31,21 @@ class Result
 
     /**
      * @var User $result_athlete
-     * @ORM\ManyToOne(targetEntity="User")
+     * @ORM\ManyToOne(targetEntity="User", fetch="EAGER")
      * @ORM\JoinColumn(name="result_athlete", referencedColumnName="id")
      */
     protected $result_athlete;
 
     /**
      * @var Distance $result_distance
-     * @ORM\ManyToOne(targetEntity="Distance")
+     * @ORM\ManyToOne(targetEntity="Distance", fetch="EAGER")
      * @ORM\JoinColumn(name="result_distance", referencedColumnName="distance_id")
      */
     protected $result_distance;
 
     /**
      * @var Sport $result_sport
-     * @ORM\ManyToOne(targetEntity="Sport")
+     * @ORM\ManyToOne(targetEntity="Sport", fetch="EAGER")
      * @ORM\JoinColumn(name="result_sport", referencedColumnName="sport_id")
      */
     protected $result_sport;
@@ -54,7 +59,7 @@ class Result
 
     /**
      * @var Competition $result_competition
-     * @ORM\ManyToOne(targetEntity="Competition")
+     * @ORM\ManyToOne(targetEntity="Competition", fetch="EAGER")
      * @ORM\JoinColumn(name="result_competition", referencedColumnName="comp_id")
      */
     protected $result_competition;
@@ -76,33 +81,33 @@ class Result
     }
 
     /**
-     * @return User
+     * @return IUser
      */
-    public function getResultAthlete(): User
+    public function getResultAthlete(): IUser
     {
         return $this->result_athlete;
     }
 
     /**
-     * @param User $result_athlete
+     * @param IUser $result_athlete
      */
-    public function setResultAthlete(User $result_athlete)
+    public function setResultAthlete(IUser $result_athlete)
     {
         $this->result_athlete = $result_athlete;
     }
 
     /**
-     * @return Distance
+     * @return IDistance
      */
-    public function getResultDistance(): Distance
+    public function getResultDistance(): IDistance
     {
         return $this->result_distance;
     }
 
     /**
-     * @param Distance $result_distance
+     * @param IDistance $result_distance
      */
-    public function setResultDistance(Distance $result_distance)
+    public function setResultDistance(IDistance $result_distance)
     {
         $this->result_distance = $result_distance;
     }
@@ -110,15 +115,15 @@ class Result
     /**
      * @return Sport
      */
-    public function getResultSport(): Sport
+    public function getResultSport(): ISport
     {
         return $this->result_sport;
     }
 
     /**
-     * @param Sport $result_sport
+     * @param ISport $result_sport
      */
-    public function setResultSport(Sport $result_sport)
+    public function setResultSport(ISport $result_sport)
     {
         $this->result_sport = $result_sport;
     }
@@ -126,15 +131,15 @@ class Result
     /**
      * @return Sport
      */
-    public function getResultMultisport(): Sport
+    public function getResultMultisport(): ISport
     {
         return $this->result_multisport;
     }
 
     /**
-     * @param Sport $result_multisport
+     * @param ISport $result_multisport
      */
-    public function setResultMultisport(Sport $result_multisport)
+    public function setResultMultisport(ISport $result_multisport)
     {
         $this->result_multisport = $result_multisport;
     }
@@ -142,15 +147,15 @@ class Result
     /**
      * @return Competition
      */
-    public function getResultCompetition(): Competition
+    public function getResultCompetition(): ICompetition
     {
         return $this->result_competition;
     }
 
     /**
-     * @param Competition $result_competition
+     * @param ICompetition $result_competition
      */
-    public function setResultCompetition(Competition $result_competition)
+    public function setResultCompetition(ICompetition $result_competition)
     {
         $this->result_competition = $result_competition;
     }
@@ -201,6 +206,10 @@ class Result
 
     public function __toString()
     {
-        return $this->getResultCompetition()->getCompName();
+        return
+            $this->getResultCompetition()->getCompName() .
+            " - " .
+            $this->getResultDistance()->getDistanceName() . " " .
+            "(" . $this->getResultAthlete()->getFirstName() . " " . $this->getResultAthlete()->getLastName() . ")";
     }
 }

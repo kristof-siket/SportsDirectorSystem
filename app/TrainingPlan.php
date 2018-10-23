@@ -2,9 +2,23 @@
 
 namespace App;
 
+use App\ModelInterfaces\IDistance;
+use App\ModelInterfaces\ILevel;
+use App\ModelInterfaces\ISport;
+use App\ModelInterfaces\ITrainingPlan;
+use App\ModelInterfaces\IUser;
 use Illuminate\Database\Eloquent\Model;
 
-class TrainingPlan extends Model
+/**
+ * @property \Carbon\Carbon $created_at
+ * @property \Carbon\Carbon $updated_at
+ * @property int $tp_id
+ * @property IUser $creator
+ * @property IDistance $distance
+ * @property ISport $sport
+ * @property ILevel $level
+ */
+class TrainingPlan extends Model implements ITrainingPlan
 {
     protected $primaryKey = 'tp_id';
 

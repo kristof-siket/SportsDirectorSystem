@@ -9,13 +9,14 @@
 namespace App\Entities;
 
 
+use App\ModelInterfaces\ISport;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity
  * @ORM\Table(name="sports")
  */
-class Sport
+class Sport implements ISport
 {
     /**
      * @ORM\Id()

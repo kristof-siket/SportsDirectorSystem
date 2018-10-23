@@ -9,13 +9,15 @@
 namespace App\Entities;
 
 
+use App\ModelInterfaces\IDistance;
+use App\ModelInterfaces\ISport;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity
  * @ORM\Table(name="distances")
  */
-class Distance
+class Distance implements IDistance
 {
     /**
      * @var int $distance_id
@@ -28,7 +30,7 @@ class Distance
     /**
      * @var
      * @ORM\ManyToOne(targetEntity="Sport")
-     * @ORM\JoinColumn(name="distance_sport", referencedColumnName="sport_id")
+     * @ORM\JoinColumn(name="sport_id", referencedColumnName="sport_id")
      */
     protected $distance_sport;
 
@@ -68,7 +70,7 @@ class Distance
     }
 
     /**
-     * @return mixed
+     * @return ISport
      */
     public function getDistanceSport()
     {
@@ -76,7 +78,7 @@ class Distance
     }
 
     /**
-     * @param mixed $distance_sport
+     * @param ISport $distance_sport
      */
     public function setDistanceSport($distance_sport)
     {
@@ -86,15 +88,15 @@ class Distance
     /**
      * @return Sport
      */
-    public function getDistancePartsport(): Sport
+    public function getDistancePartsport(): ISport
     {
         return $this->distance_partsport;
     }
 
     /**
-     * @param Sport $distance_partsport
+     * @param ISport $distance_partsport
      */
-    public function setDistancePartsport(Sport $distance_partsport)
+    public function setDistancePartsport(ISport $distance_partsport)
     {
         $this->distance_partsport = $distance_partsport;
     }

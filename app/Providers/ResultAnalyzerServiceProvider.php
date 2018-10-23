@@ -29,8 +29,8 @@ class ResultAnalyzerServiceProvider extends ServiceProvider
     {
         // "Depend on the interface, not the implementation!"
         $this->app->bind('App\Services\Interfaces\IResultAnalyzer', function() {
-           //return new ResultAnalyzerDataMapper(app('em'));
-           return new ResultAnalyzerActiveRecord();
+            return new ResultAnalyzerDataMapper(app('em'));
+            //return new ResultAnalyzerActiveRecord();
         });
     }
 

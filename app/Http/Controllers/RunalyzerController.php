@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\ModelInterfaces\IResult;
 use App\Result;
 use App\Services\Interfaces\IResultAnalyzer;
 use Illuminate\Http\Request;
@@ -16,11 +17,14 @@ class RunalyzerController extends Controller
      */
     public function index(IResultAnalyzer $resultAnalyzer)
     {
+        if (!\Auth::check()) {
+            return redirect()->route('login');
+        }
+
+        //service calls
         $results = $resultAnalyzer->getResultRepository()->getResultsOfUser(\Auth::id());
 
-        $ids = $resultAnalyzer->getResultRepository()->getResultsId($results);
-
-        return view('runalyzer.index', ['results' => $results, 'ids' => $ids]);
+        return view('runalyzer.index', ['results' => $results]);
     }
 
     /**
@@ -32,7 +36,7 @@ class RunalyzerController extends Controller
     public function create(IResultAnalyzer $resultAnalyzer)
     {
         $result = Result::find(25); // TODO: refactor this hard-coding
-        ini_set('max_execution_time', 500);
+        ini_set('max_execution_time', 1000);
 
         $resultAnalyzer->initializeAnalyzerResults(0.5, $result);
 
@@ -48,21 +52,44 @@ class RunalyzerController extends Controller
      */
     public function show(Request $request, IResultAnalyzer $resultAnalyzer)
     {
-        $resultRepo = $resultAnalyzer->getResultRepository();
-        $result = $resultRepo->getResultById($request->input('result'));
-
-        if ($request->input('analysis_type') == 'graph')
-        {
-            $pulses = $resultRepo->getFullPulseData($result);
-            $tempos = $resultRepo->getFullTempoData(0.5, $result);
-
-            return view('runalyzer.chart', ['pulses' => $pulses, 'tempos' => $tempos]);
+        // Check if the user is authenticated
+        if (!\Auth::check()) {
+            return redirect()->route('login');
+        } // Check if the user selected any result
+        else if (!$this->validate($request, ['result' => 'required'])) {
+            return back()->with(['error' => 'Please, select a result to analyze.']);
         }
 
-        else
-        {
-            $stats = $resultAnalyzer->getStatistics($result);
-            return view('runalyzer.stats', ['stats' => $stats]);
+        // Get the Results Repository from the Analyzer Service
+        $resultRepo = $resultAnalyzer->getResultRepository();
+
+        // Get the selected result by its id
+        $result = $resultRepo->getResultById($request->input('result'));
+
+        // Switch services according to selected analysis type.
+        switch ($request->input('analysis_type')) {
+            case  "graph" :
+                {
+                    $pulses = $resultRepo->getFullPulseData($result);
+                    $tempos = $resultRepo->getFullTempoData(0.5, $result);
+
+                    return view('runalyzer.chart', ['pulses' => $pulses, 'tempos' => $tempos])
+                        ->with(['success' => 'Analysis graphs created successfully.']);
+                }
+            case "stat":
+                {
+                    $stats = $resultAnalyzer->getStatistics($result);
+                    return view('runalyzer.stats', ['stats' => $stats])
+                        ->with(['success' => 'Personal statistics calculated successfully.']);
+                }
+            case "race_stat":
+                {
+                    $race_stats = $resultAnalyzer->getOverallCompetitionStatistics($result->getResultCompetition());
+                    return view("runalyzer.race-stats", ['race_stats' => $race_stats, 'competition' => $result->getResultCompetition()])
+                        ->with(['success' => 'Overall competition statistics calculated successfully.']);
+                }
+            default:
+                return back()->with(['error' => 'No service selected!']);
         }
     }
 }

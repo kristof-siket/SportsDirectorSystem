@@ -9,6 +9,8 @@
 namespace App\Services;
 
 use App\AnalyzerResult;
+use App\Competition;
+use App\ModelInterfaces\ICompetition;
 use App\Result;
 use App\Services\Interfaces\IResultAnalyzer;
 use App\Services\Repository\Result\ResultRepoEloquent;
@@ -29,10 +31,11 @@ class ResultAnalyzerActiveRecord implements IResultAnalyzer
      */
     public function initializeAnalyzerResults(float $sampleRate, $result)
     {
-        $results = AnalyzerResult::all();
+        ini_set('memory_limit','1G');
+        $results = AnalyzerResult::where(['aresult_result' => $result]);
 
-        if ($results->isNotEmpty()) {
-            AnalyzerResult::truncate();
+        if (count($results) > 0) {
+            $results->delete();
         }
 
         $duration = $result->result_time;
@@ -112,5 +115,122 @@ class ResultAnalyzerActiveRecord implements IResultAnalyzer
             'max_tempo' => $maxtempo);
 
         return $statistics;
+    }
+
+    /**
+     * Gets summarized statistics of given competition (global stats).
+     *
+     * @param $competition Competition
+     * @return mixed
+     */
+    public function getOverallCompetitionStatistics($competition)
+    {
+        return
+            [
+                'team_champions' => $this->getBestTeamAverageSpeed($competition),
+                'lowest_avg_pulse' => $this->getLowestAveragePulse($competition),
+                'highest_avg_pulse' => $this->getHighestAveragePulse($competition),
+                'best_fitness' => $this->getBestFitness($competition)
+            ];
+    }
+
+    /**
+     * Gets the best team average speeds in the given competition as a key-value pair array.
+     *
+     * @param ICompetition $competition
+     * @return array
+     */
+    private function getBestTeamAverageSpeed(ICompetition $competition): array
+    {
+        $query = Competition::where('comp_id', $competition->getCompId())
+            ->join('results', 'result_competition', '=', 'competitions.comp_id')
+            ->join('analyzer_results', 'analyzer_results.aresult_result', '=', 'results.result_id')
+            ->join('users', 'results.result_athlete', '=', 'users.id')
+            ->join('teams', 'teams.team_id', '=', 'users.team_id')
+            ->join('competitions_distances', 'competition_id', '=', 'competitions.comp_id')
+            ->join('distances as d1', 'd1.distance_id', '=', 'competitions_distances.distance_id')
+            ->join('distances as d2', 'd2.distance_id', '=', 'results.result_distance')
+            ->selectRaw
+            ("teams.team_name as Team,
+             concat(users.first_name, ' ', users.last_name) as Name,
+             (avg(analyzer_results.aresult_kilometers / analyzer_results.aresult_timestamp)*60*60) as Average,
+             d2.distance_name as Distance")
+            ->groupBy(['Distance', 'Team', 'Name'])
+            ->get();
+
+        return $query->toArray();
+
+    }
+
+    /**
+     * Gets the athlete with the lowest average pulse as a key-value array.
+     *
+     * @param $competition ICompetition
+     * @return array
+     */
+    private function getLowestAveragePulse($competition)
+    {
+        $query = Competition::where('comp_id', $competition->getCompId())
+            ->join('results', 'result_competition', '=', 'competitions.comp_id')
+            ->join('analyzer_results', 'analyzer_results.aresult_result', '=', 'results.result_id')
+            ->join('users', 'results.result_athlete', '=', 'users.id')
+            ->join('competitions_distances', 'competition_id', '=', 'competitions.comp_id')
+            ->join('distances as d1', 'd1.distance_id', '=', 'competitions_distances.distance_id')
+            ->join('distances as d2', 'd2.distance_id', '=', 'results.result_distance')
+            ->selectRaw("users.id as ID, avg(analyzer_results.aresult_pulse) as AveragePulse, concat(users.first_name, ' ', users.last_name) as Name")
+            ->groupBy(['ID', 'Name'])
+            ->orderBy('AveragePulse', 'asc')
+            ->get();
+
+        return $query->toArray()[0];
+    }
+    /**
+     * Gets the athlete with the highest average pulse as a key-value array.
+     *
+     * @param $competition ICompetition
+     * @return array
+     */
+    private function getHighestAveragePulse($competition)
+    {
+        $query = Competition::where('comp_id', $competition->getCompId())
+            ->join('results', 'result_competition', '=', 'competitions.comp_id')
+            ->join('analyzer_results', 'analyzer_results.aresult_result', '=', 'results.result_id')
+            ->join('users', 'results.result_athlete', '=', 'users.id')
+            ->join('competitions_distances', 'competition_id', '=', 'competitions.comp_id')
+            ->join('distances as d1', 'd1.distance_id', '=', 'competitions_distances.distance_id')
+            ->join('distances as d2', 'd2.distance_id', '=', 'results.result_distance')
+            ->selectRaw("users.id as ID, avg(analyzer_results.aresult_pulse) as AveragePulse, concat(users.first_name, ' ', users.last_name) as Name")
+            ->groupBy(['ID', 'Name'])
+            ->orderBy('AveragePulse', 'desc')
+            ->get();
+
+        return $query->toArray()[0];
+    }
+
+    /**
+     * Gets the best average pulse / average tempo value ("best fittness") of a competition.
+     *
+     * @param $competition ICompetition
+     * @return array
+     */
+    private function getBestFitness($competition)
+    {
+        $query = Competition::where('comp_id', $competition->getCompId())
+            ->join('results', 'result_competition', '=', 'competitions.comp_id')
+            ->join('analyzer_results', 'analyzer_results.aresult_result', '=', 'results.result_id')
+            ->join('users', 'results.result_athlete', '=', 'users.id')
+            ->join('competitions_distances', 'competition_id', '=', 'competitions.comp_id')
+            ->join('distances as d1', 'd1.distance_id', '=', 'competitions_distances.distance_id')
+            ->join('distances as d2', 'd2.distance_id', '=', 'results.result_distance')
+            ->selectRaw
+            ("concat(users.first_name, ' ', users.last_name) as Name,
+             avg(analyzer_results.aresult_pulse) as AveragePulse,
+             (avg(analyzer_results.aresult_kilometers / analyzer_results.aresult_timestamp)*60*60) as AverageTempo,
+             (avg(analyzer_results.aresult_pulse)) / (avg(analyzer_results.aresult_kilometers / analyzer_results.aresult_timestamp)*60*60) as Fitness")
+            ->groupBy(['Name'])
+            ->orderBy('Fitness', 'desc')
+            ->get();
+
+        return $query->toArray()[0];
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Competition;
+use App\ModelInterfaces\IResult;
 use App\Result;
 use Illuminate\Http\Request;
 
@@ -12,14 +13,26 @@ class ResultsController extends Controller
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
+     * @param $comp_id int
      */
     public function index($comp_id)
     {
+        if (!\Auth::check()) {
+            return redirect()->route('login');
+        }
+
+        /**
+         * @var $this_results IResult[]
+         */
         $this_results = Result::where('result_competition', $comp_id)
-            ->orderBy('result_time', 'desc')
+            ->orderBy('result_distance')
+            ->orderByRaw('result_time = 0')
+            ->orderBy('result_time', 'asc')
+            ->distinct('result_athlete')
             ->get();
 
-        return view('results.index', ['results' => $this_results]);
+        $grouped = $this_results->groupBy('result_distance');
+        return view('results.index', ['results' => $grouped]);
     }
 
     /**
