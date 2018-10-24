@@ -30,16 +30,30 @@ class RunalyzerController extends Controller
      * Create the sample pseudo-random data for the race data analysis.
      *
      * @param IResultAnalyzer $resultAnalyzer
+     * @param Request $request
      * @return \Illuminate\Http\Response
      */
-    public function create(IResultAnalyzer $resultAnalyzer, int $result_id)
+    public function create(IResultAnalyzer $resultAnalyzer, Request $request)
     {
-        $result = Result::find($result_id);
-        ini_set('max_execution_time', 1000);
+        try {
+            $result = $resultAnalyzer->getResultRepository()->getResultById($request->input('result_id'));
+            ini_set('max_execution_time', 1000);
 
-        $resultAnalyzer->initializeAnalyzerResults(0.5, $result);
+            $resultAnalyzer->initializeAnalyzerResults(0.5, $result);
 
-        return response('Database content created successfully!');
+            flash('DB content succesfully created for the result.')->success();
+        } catch (\Exception $ex) {
+            flash("DB update was not succesful.")->error();
+        } finally {
+            return back();
+        }
+
+    }
+
+    public function setup()
+    {
+        $results = Result::where('result_time', '<>', 0)->get();
+        return view('runalyzer.setup', ['results' => $results]);
     }
 
     /**
