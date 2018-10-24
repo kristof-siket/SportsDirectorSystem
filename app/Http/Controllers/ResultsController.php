@@ -126,9 +126,13 @@ class ResultsController extends Controller
          * @var $result Result
          */
         $result = Result::find($res_id);
-        $result->setResultTime(strtotime($request->input('result_time')));
+
+        $seconds = strtotime($request->input('result_time')) % 86400;
+
+        $result->setResultTime($seconds);
         $result->save();
 
+        flash('Save time was successful!')->success();
         return redirect()->back();
     }
 
