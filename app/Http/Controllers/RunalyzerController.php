@@ -32,9 +32,9 @@ class RunalyzerController extends Controller
      * @param IResultAnalyzer $resultAnalyzer
      * @return \Illuminate\Http\Response
      */
-    public function create(IResultAnalyzer $resultAnalyzer)
+    public function create(IResultAnalyzer $resultAnalyzer, int $result_id)
     {
-        $result = Result::find(25); // TODO: refactor this hard-coding
+        $result = Result::find($result_id);
         ini_set('max_execution_time', 1000);
 
         $resultAnalyzer->initializeAnalyzerResults(0.5, $result);

@@ -72,9 +72,9 @@ class ResultsController extends Controller
                 'result_time' => 0,
                 'result_athlete' => \Auth::user()->id,
                 'result_competition' => $comp_id,
-                'result_sport' => Competition::find($comp_id)->comp_sport,
+                'result_sport' => $comp->comp_sport,
                 'result_distance' => $distance_id,
-                'result_multisport' => null // TODO: check if competition sport is a multi-sport
+                'result_multisport' => null
             ]);
 
             if ($new_res) {
@@ -88,7 +88,6 @@ class ResultsController extends Controller
             flash('You must be logged in to enter competitions!')->info();
             return redirect()->route('login');
         }
-        // TODO: flash messages
     }
 
     /**
