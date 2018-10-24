@@ -122,6 +122,7 @@ class ResultsController extends Controller
      */
     public function update($comp_id, $res_id, Request $request)
     {
+        $this->validate($request, ['result_time' => 'required']);
         /**
          * @var $result Result
          */
