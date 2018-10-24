@@ -10,8 +10,8 @@ namespace App\Services\Repository\Result;
 
 
 use App\AnalyzerResult;
+use App\ModelInterfaces\IResult;
 use App\Result;
-use App\User;
 
 class ResultRepoEloquent implements IResultRepository
 {
@@ -108,5 +108,16 @@ class ResultRepoEloquent implements IResultRepository
          */
         $ids = $results->pluck('result_id');
         return $ids;
+    }
+
+    /**
+     * Checks if there was analyzer result data recorded for the specified Result.
+     *
+     * @param $result IResult
+     * @return bool
+     */
+    public function checkIfAnalyzerResultDataExist($result): bool
+    {
+        return AnalyzerResult::where('aresult_result', $result->getResultId())->exists();
     }
 }

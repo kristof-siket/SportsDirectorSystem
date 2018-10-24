@@ -75,5 +75,13 @@ namespace App\Services\Repository\Result {
          * @return mixed
          */
         public function getResultsId($results);
+
+        /**
+         * Checks if there was analyzer result data recorded for the specified Result.
+         *
+         * @param $result IResult
+         * @return bool
+         */
+        public function checkIfAnalyzerResultDataExist($result): bool;
     }
 }
