@@ -139,7 +139,7 @@ class ResultAnalyzerDataMapper extends DoctrineService implements IResultAnalyze
                         cdc.comp_id = :comp_id AND
                         d.distance_id = cdd.distance_id AND                                                
                         r.result_competition = :comp_id')
-            ->groupBy('Distance', 'Team')
+            ->groupBy('Distance', 'Team', 'Name')
             ->setParameters(['comp_id' => $competition->getCompId()])
             ->getQuery();
 
