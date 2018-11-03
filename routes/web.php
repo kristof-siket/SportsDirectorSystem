@@ -16,13 +16,13 @@
  */
 Route::get('/', 'PagesController@index')->name('welcome');
 Route::get('/dashboard', 'HomeController@index')->name('dashboard');
+Route::get('/runalyzer', 'RunalyzerController@index')->name('runalyzer.index');
 
 /*
  * Routes defined for models (automatic crud methods, url generation, etc.)
  */
 Route::resource('competitions', 'CompetitionsController', ['parameters' => ['id' => 'comp_id']]);
 Route::resource('training_plans', 'TrainingPlansController');
-Route::resource('runalyzer', 'RunalyzerController');
 Route::resource('users', 'UsersController');
 
 /*
@@ -33,6 +33,8 @@ Route::post('/competitions/{comp_id}/savedistances', 'CompetitionsController@sto
 Route::put('/results/{comp_id}/{res_id}', 'ResultsController@update')->name('results.update');
 Route::get('/results/{comp_id}', 'ResultsController@index')->name('results.index');
 Route::get('/competitions/{comp_id}/enter/{dist_id}', 'ResultsController@enter')->name('results.enter');
+Route::get('/runalyzer/setup', 'RunalyzerController@setup')->name('runalyzer.setup');
+Route::get('/runalyzer/create', 'RunalyzerController@create')->name('runalyzer.create');
 Route::get('/runalyzer/show', 'RunalyzerController@show')->name('runalyzer.show');
 
 /*

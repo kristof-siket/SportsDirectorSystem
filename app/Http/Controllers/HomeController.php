@@ -26,7 +26,6 @@ class HomeController extends Controller
      */
     public function index()
     {
-        //TODO: Here it is not too serious, but it would be better to put these logic to services, e.g. one overall common CRUD service.
         $user_competitions = DB::table('competitions')
             ->join('results', 'results.result_competition', '=', 'competitions.comp_id')
             ->join('competitions_distances', 'competitions_distances.competition_id', '=', 'competitions.comp_id')

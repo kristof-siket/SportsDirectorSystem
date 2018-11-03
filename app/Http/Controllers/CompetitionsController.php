@@ -7,6 +7,7 @@ use App\CompetitionsDistances;
 use App\Distance;
 use App\ModelInterfaces\ICompetition;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Input;
 
 class CompetitionsController extends Controller
@@ -50,7 +51,9 @@ class CompetitionsController extends Controller
      */
     public function store(Request $request)
     {
-        if(\Auth::check()) {
+        if (!\Auth::check()) {
+            return redirect()->route('login');
+        }
             $competition = Competition::create([
                 "comp_name" => $request->input('comp_name', 'Új verseny'),
                 "comp_sport" => $request->input('comp_sport'),
@@ -59,39 +62,24 @@ class CompetitionsController extends Controller
                 "comp_location" => $request->input('comp_location', 'Budapest'),
             ]);
             if ($competition) {
+                flash('Competition created successfully, now you can add distances to it!')->important();
                 return redirect()->route('competitions.addDistances', ['comp_id' => $competition->getCompId()]);
             }
             else {
-                return redirect()->route('competitions.index');
+                flash('Competition creation was unsuccessful, please, fill the input fields correctly!')->error();
+                return back();
             }
-            // TODO: flash messages
         }
-
-        else {
-            return redirect()->route('login');
-        }
-    }
 
     /**
      * Display the form for adding distances to recently created event.
      *
-     * @param Competition $competition
-     * @return
+     * @param $comp_id int
+     * @param $request Request
+     * @return Response
      */
     public function addDistances($comp_id, Request $request)
     {
-//        $competition = Competition::find($comp_id);
-//        if (\Auth::check()) {
-//            foreach ($request->input('comp_distances') as $comp_distance) {
-//                CompetitionsDistances::create([
-//                    'competition_id' => $competition->comp_id,
-//                    'distance_id' => $comp_distance
-//                ]);
-//            }
-//            return redirect()->route('competitions.show', ['comp_id' => $competition->comp_id]);
-//        } else {
-//            return redirect()->route('login');
-//        }
 
         $this_comp = Competition::find($comp_id);
         return view('competitions.add_distances', ['comp' => $this_comp,
@@ -102,19 +90,19 @@ class CompetitionsController extends Controller
     {
         $comp_distances = Input::get('comp_distances');
         $competition = Competition::find($comp_id);
-        if (\Auth::check()) {
-            foreach ($comp_distances as $comp_distance) {
-                CompetitionsDistances::create([
-                    'competition_id' => $competition->comp_id,
-                    'distance_id' => $comp_distance
-                ]);
-            }
-            return redirect()->route('competitions.show', ['comp_id' => $competition->comp_id]);
-        } else {
+
+        if (!\Auth::check()) {
             return redirect()->route('login');
         }
 
-        // TODO: fix this stuff to work properly...
+        foreach ($comp_distances as $comp_distance) {
+            CompetitionsDistances::create([
+                'competition_id' => $competition->comp_id,
+                'distance_id' => $comp_distance
+            ]);
+        }
+
+        return redirect()->route('competitions.show', ['comp_id' => $competition->comp_id]);
     }
 
     /**

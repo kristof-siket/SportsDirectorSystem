@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\ModelInterfaces\IResult;
 use App\Result;
 use App\Services\Interfaces\IResultAnalyzer;
 use Illuminate\Http\Request;
@@ -31,16 +30,30 @@ class RunalyzerController extends Controller
      * Create the sample pseudo-random data for the race data analysis.
      *
      * @param IResultAnalyzer $resultAnalyzer
+     * @param Request $request
      * @return \Illuminate\Http\Response
      */
-    public function create(IResultAnalyzer $resultAnalyzer)
+    public function create(IResultAnalyzer $resultAnalyzer, Request $request)
     {
-        $result = Result::find(25); // TODO: refactor this hard-coding
-        ini_set('max_execution_time', 1000);
+        try {
+            $result = $resultAnalyzer->getResultRepository()->getResultById($request->input('result_id'));
+            ini_set('max_execution_time', 1000);
 
-        $resultAnalyzer->initializeAnalyzerResults(0.5, $result);
+            $resultAnalyzer->initializeAnalyzerResults(0.5, $result);
 
-        return response('Database content created successfully!');
+            flash('DB content succesfully created for the result.')->success();
+        } catch (\Exception $ex) {
+            flash("DB update was not succesful.")->error();
+        } finally {
+            return back();
+        }
+
+    }
+
+    public function setup()
+    {
+        $results = Result::where('result_time', '<>', 0)->get();
+        return view('runalyzer.setup', ['results' => $results]);
     }
 
     /**
@@ -57,7 +70,8 @@ class RunalyzerController extends Controller
             return redirect()->route('login');
         } // Check if the user selected any result
         else if (!$this->validate($request, ['result' => 'required'])) {
-            return back()->with(['error' => 'Please, select a result to analyze.']);
+            flash('Please, select a result to analyze.')->warning();
+            return back();
         }
 
         // Get the Results Repository from the Analyzer Service
@@ -66,6 +80,12 @@ class RunalyzerController extends Controller
         // Get the selected result by its id
         $result = $resultRepo->getResultById($request->input('result'));
 
+        // Check if there are analyzer data recorded for the specified result
+        if (!$resultRepo->checkIfAnalyzerResultDataExist($result)) {
+            flash('No analyzer data recorded for the specified result!')->warning();
+            return back();
+        }
+
         // Switch services according to selected analysis type.
         switch ($request->input('analysis_type')) {
             case  "graph" :
@@ -73,23 +93,28 @@ class RunalyzerController extends Controller
                     $pulses = $resultRepo->getFullPulseData($result);
                     $tempos = $resultRepo->getFullTempoData(0.5, $result);
 
-                    return view('runalyzer.chart', ['pulses' => $pulses, 'tempos' => $tempos])
-                        ->with(['success' => 'Analysis graphs created successfully.']);
+                    flash('Analysis graphs created successfully.')->success();
+                    return view('runalyzer.chart', ['pulses' => $pulses, 'tempos' => $tempos]);
+
                 }
             case "stat":
                 {
                     $stats = $resultAnalyzer->getStatistics($result);
-                    return view('runalyzer.stats', ['stats' => $stats])
-                        ->with(['success' => 'Personal statistics calculated successfully.']);
+
+                    flash('Personal statistics calculated successfully.')->success();
+                    return view('runalyzer.stats', ['stats' => $stats]);
                 }
             case "race_stat":
                 {
                     $race_stats = $resultAnalyzer->getOverallCompetitionStatistics($result->getResultCompetition());
-                    return view("runalyzer.race-stats", ['race_stats' => $race_stats, 'competition' => $result->getResultCompetition()])
-                        ->with(['success' => 'Overall competition statistics calculated successfully.']);
+
+                    flash('Overall competition statistics calculated successfully.')->success();
+                    return view("runalyzer.race-stats", ['race_stats' => $race_stats, 'competition' => $result->getResultCompetition()]);
+
                 }
             default:
-                return back()->with(['error' => 'No service selected!']);
+                flash('Unknown service selected, returned to Runalyzer form!')->warning();
+                return back();
         }
     }
 }

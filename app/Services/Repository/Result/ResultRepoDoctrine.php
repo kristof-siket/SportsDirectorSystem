@@ -8,7 +8,9 @@
 
 namespace App\Services\Repository\Result;
 
+use App\Entities\AnalyzerResult;
 use App\Entities\Result;
+use App\ModelInterfaces\IResult;
 use App\Services\ORMServices\DoctrineService;
 use Doctrine\ORM\EntityManager;
 
@@ -187,5 +189,25 @@ class ResultRepoDoctrine extends DoctrineService implements IResultRepository
     public function __construct(EntityManager $em)
     {
         parent::__construct($em, $em->getClassMetadata(Result::class));
+    }
+
+    /**
+     * Checks if there was analyzer result data recorded for the specified Result.
+     *
+     * @param $result IResult
+     * @return bool
+     */
+    public function checkIfAnalyzerResultDataExist($result): bool
+    {
+        $qb = $this->em->createQueryBuilder();
+
+        $query = $qb->select('a')
+            ->from(AnalyzerResult::class, 'a')
+            ->where('a.aresult_result = :result_id')
+            ->setMaxResults(10)
+            ->setParameter('result_id', $result->getResultId())
+            ->getQuery();
+
+        return !empty($query->getResult());
     }
 }

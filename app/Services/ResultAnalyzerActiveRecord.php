@@ -10,7 +10,9 @@ namespace App\Services;
 
 use App\AnalyzerResult;
 use App\Competition;
+use App\ModelInterfaces\IAnalyzerResult;
 use App\ModelInterfaces\ICompetition;
+use App\ModelInterfaces\IResult;
 use App\Result;
 use App\Services\Interfaces\IResultAnalyzer;
 use App\Services\Repository\Result\ResultRepoEloquent;
@@ -24,7 +26,7 @@ class ResultAnalyzerActiveRecord implements IResultAnalyzer
      * @param $sampleRate float
      * The frequency of records.
      *
-     * @param mixed $result
+     * @param IResult $result
      * The Result entity that this analysis belongs to.
      *
      * @return void
@@ -32,10 +34,15 @@ class ResultAnalyzerActiveRecord implements IResultAnalyzer
     public function initializeAnalyzerResults(float $sampleRate, $result)
     {
         ini_set('memory_limit','1G');
-        $results = AnalyzerResult::where(['aresult_result' => $result]);
 
-        if (count($results) > 0) {
-            $results->delete();
+        /**
+         * @var $result IAnalyzerResult[]
+         */
+        $results = AnalyzerResult::where('aresult_result', $result->getResultId())->get();
+        dump($results);
+
+        foreach ($results as $result) {
+            AnalyzerResult::destroy($result->getAresultId());
         }
 
         $duration = $result->result_time;
