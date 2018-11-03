@@ -115,38 +115,4 @@ class CompetitionsController extends Controller
     {
         return view('competitions.details', ['competition' => $competition]);
     }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Competition  $competition
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Competition $competition)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Competition  $competition
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, Competition $competition)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Competition  $competition
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Competition $competition)
-    {
-        //
-    }
 }
