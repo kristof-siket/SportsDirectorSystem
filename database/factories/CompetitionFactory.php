@@ -13,7 +13,7 @@ $factory->define(App\Competition::class, function (Faker $faker) {
         'comp_name' => $faker->company,
         'comp_sport' => factory(\App\Sport::class),
         'comp_promoter' => factory(\App\User::class),
-        'comp_date' => $faker->dateTime,
+        'comp_date' => "2018-11-07 17:25:41",
         'comp_location' => $faker->city
     ];
 });
