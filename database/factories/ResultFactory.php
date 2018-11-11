@@ -15,7 +15,7 @@ $factory->define(App\Result::class, function (Faker $faker) {
         'result_competition' => factory(\App\Competition::class),
         'result_distance' => factory(\App\Distance::class),
         'disqualified' => 0,
-        'result_time' => $faker->numberBetween(2000, 3600),
+        'result_time' => $faker->numberBetween(100, 200),
         'result_multisport' => factory(\App\Sport::class)
     ];
 });
