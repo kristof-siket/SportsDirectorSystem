@@ -30,7 +30,7 @@ Route::resource('users', 'UsersController');
  */
 Route::get('/competitions/{comp_id}/distances', 'CompetitionsController@addDistances')->name('competitions.addDistances');
 Route::post('/competitions/{comp_id}/savedistances', 'CompetitionsController@storeDistances')->name('competitions.storeDistances');
-Route::put('/results/update/{res_id}', 'ResultsController@update')->name('results.update');
+Route::put('/results/{res_id}/update', 'ResultsController@update')->name('results.update');
 Route::get('/results/{comp_id}', 'ResultsController@index')->name('results.index');
 Route::get('/competitions/{comp_id}/enter/{dist_id}', 'ResultsController@enter')->name('results.enter');
 Route::get('/runalyzer/setup', 'RunalyzerController@setup')->name('runalyzer.setup');

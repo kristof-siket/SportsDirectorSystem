@@ -10,9 +10,11 @@ namespace App\Services\Interfaces;
 
 use App\ModelInterfaces\ICompetition;
 use App\ModelInterfaces\IDistance;
+use App\ModelInterfaces\IResult;
 use App\ModelInterfaces\ISport;
 use App\ModelInterfaces\ITeam;
 use App\ModelInterfaces\IUser;
+use App\Result;
 use App\TrainingPlan;
 
 /**
@@ -26,16 +28,17 @@ interface ICrudService
     /**
      * @return ICompetition[]
      */
-    function GetAllCompetitions(): array;
+    function GetAllCompetitions();
 
     /**
      * @param string $name
      * @param int $sport
-     * @param \DateTime $date
+     * @param $date
      * @param int $promoter
      * @param string $location
+     * @return ICompetition
      */
-    function CreateCompetition(string $name, int $sport, \DateTime $date, int $promoter, string $location): void;
+    function CreateCompetition(string $name, int $sport, $date, int $promoter, string $location): ICompetition;
 
     /**
      * @param int $id
@@ -47,7 +50,7 @@ interface ICrudService
      * @param ISport $sport
      * @return IDistance[]
      */
-    function FindAllDistancesForSport(ISport $sport): array;
+    function FindAllDistancesForSport(ISport $sport);
 
     /**
      * @param ICompetition $competition
@@ -69,15 +72,15 @@ interface ICrudService
 
     /**
      * @param IUser $creator
-     * @return TrainingPlan|null
+     * @return TrainingPlan[]
      */
-    function FindTrainingPlanByCreator(IUser $creator): ?TrainingPlan;
+    function FindTrainingPlansOfCreator(IUser $creator): array;
 
     /**
      * @param int $count
      * @return ICompetition[]
      */
-    function GetMostRecentCompetitions(int $count): array;
+    function GetMostRecentCompetitions(int $count);
 
     /**
      * @param IUser $athlete
@@ -85,12 +88,27 @@ interface ICrudService
      * @param IDistance $distance
      * @param ISport $sport
      * @param int $time
+     * @return IResult
      */
-    function CreateResult(IUser $athlete, ICompetition $competition, IDistance $distance, ISport $sport, int $time): void;
+    function CreateResult(IUser $athlete, ICompetition $competition, IDistance $distance, ISport $sport, int $time): ?IResult;
 
     /**
      * @param int $id
      * @return ITeam|null
      */
     function FindTeamById(int $id): ?ITeam;
+
+    /**
+     * @param IUser $user
+     * @param ICompetition $competition
+     * @param IDistance $distance
+     * @return bool
+     */
+    function checkIfUserAlreadyEnteredForComp(IUser $user, ICompetition $competition, IDistance $distance): bool;
+
+    /**
+     * @param $id
+     * @return mixed
+     */
+    function FindResultById($id): Result;
 }

@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Competition;
 use App\ModelInterfaces\IResult;
-use App\Result;
+use App\Services\Interfaces\ICrudService;
+use App\Services\Interfaces\IResultAnalyzer;
 use Illuminate\Http\Request;
 
 class ResultsController extends Controller
@@ -12,76 +12,52 @@ class ResultsController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
      * @param $comp_id int
+     * @param IResultAnalyzer $resultAnalyzer
+     * @param ICrudService $crudService
+     * @return \Illuminate\Http\Response
      */
-    public function index($comp_id)
+    public function index($comp_id, IResultAnalyzer $resultAnalyzer, ICrudService $crudService)
     {
         if (!\Auth::check()) {
             return redirect()->route('login');
         }
-
-        /**
-         * @var $this_results IResult[]
-         */
-        $this_results = Result::where('result_competition', $comp_id)
-            ->orderBy('result_distance')
-            ->orderByRaw('result_time = 0')
-            ->orderBy('result_time', 'asc')
-            ->distinct('result_athlete')
-            ->get();
+        $this_results = $resultAnalyzer->getResultRepository()
+            ->getCompetitionResults($crudService->FindCompById($comp_id));
 
         $grouped = $this_results->groupBy('result_distance');
         return view('results.index', ['results' => $grouped]);
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
      * Stores the result record of the entered athlete with result time 0.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param $comp_id
+     * @param $distance_id
+     * @param ICrudService $crudService
      * @return \Illuminate\Http\Response
      */
-    public function enter($comp_id, $distance_id)
+    public function enter($comp_id, $distance_id, ICrudService $crudService)
     {
         if (\Auth::check()) {
 
-            $existing_result = Result::where('result_athlete', \Auth::user()->id)
-                ->where('result_competition', $comp_id)
-                ->where('result_distance', $distance_id)
-                ->get();
+            $comp = $crudService->FindCompById($comp_id);
+            $dist = $crudService->FindDistanceById($distance_id);
+            $result_exists = $crudService->checkIfUserAlreadyEnteredForComp(\Auth::user(), $comp, $dist);
 
-            if ($existing_result->isNotEmpty()) {
+            if ($result_exists) {
                 flash('You have already entered to this distance!')->warning();
-                return redirect()->route('competitions.index');
+                return back();
             }
 
-            $comp = Competition::find($comp_id);
-
-            $new_res = Result::create([
-                'disqualified' => 0,
-                'result_time' => 0,
-                'result_athlete' => \Auth::user()->id,
-                'result_competition' => $comp_id,
-                'result_sport' => $comp->comp_sport,
-                'result_distance' => $distance_id,
-                'result_multisport' => null
-            ]);
+            $comp = $crudService->FindCompById($comp_id);
+            $new_res = $crudService->CreateResult(\Auth::user(), $comp, $dist, $comp->getCompSport(), 0);
 
             if ($new_res) {
-                flash('Successfully entered to ' . $comp->comp_name . '!')->success();
+                flash('Successfully entered to ' . $comp->getCompName() . '!')->success();
                 return redirect()->route('results.index', ['comp_id' => $comp_id]);
             } else {
-                flash('Could not enter to competition ' . $comp->comp_name . '!')->error()->important();
+                flash('Could not enter to competition ' . $comp->getCompName() . '!')->error()->important();
                 return redirect()->route('results.index', ['comp_id' => $comp_id]);
             }
         } else {
@@ -91,59 +67,25 @@ class ResultsController extends Controller
     }
 
     /**
-     * Display the specified resource.
-     *
-     * @param  \App\Result  $result
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Result $result)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Result  $result
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Result $result)
-    {
-        //
-    }
-
-    /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Result  $result
+     * @param $res_id
+     * @param  \Illuminate\Http\Request $request
+     * @param ICrudService $crudService
      * @return \Illuminate\Http\Response
      */
-    public function update($comp_id, $res_id, Request $request)
+    public function update($res_id, Request $request, ICrudService $crudService)
     {
         $this->validate($request, ['result_time' => 'required']);
         /**
-         * @var $result Result
+         * @var $result IResult
          */
-        $result = Result::find($res_id);
+        $result = $crudService->FindResultById($res_id);
 
         $seconds = strtotime($request->input('result_time')) % 86400;
-
         $result->setResultTime($seconds);
-        $result->save();
 
         flash('Save time was successful!')->success();
         return redirect()->back();
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Result  $result
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Result $result)
-    {
-        //
     }
 }

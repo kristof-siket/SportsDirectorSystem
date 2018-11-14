@@ -9,34 +9,48 @@
 namespace App\Services;
 
 
+use App\Competition;
+use App\CompetitionsDistances;
+use App\Distance;
 use App\ModelInterfaces\ICompetition;
 use App\ModelInterfaces\IDistance;
+use App\ModelInterfaces\IResult;
 use App\ModelInterfaces\ISport;
 use App\ModelInterfaces\ITeam;
 use App\ModelInterfaces\IUser;
+use App\Result;
 use App\Services\Interfaces\ICrudService;
+use App\Team;
 use App\TrainingPlan;
+use DB;
 
 class CommonCrudService implements ICrudService
 {
     /**
      * @return ICompetition[]
      */
-    function GetAllCompetitions(): array
+    function GetAllCompetitions()
     {
-        // TODO: Implement GetAllCompetitions() method.
+        return Competition::orderBy("comp_date", "desc")->get();
     }
 
     /**
      * @param string $name
      * @param int $sport
-     * @param \DateTime $date
+     * @param $date
      * @param int $promoter
      * @param string $location
+     * @return ICompetition
      */
-    function CreateCompetition(string $name, int $sport, \DateTime $date, int $promoter, string $location): void
+    function CreateCompetition(string $name, int $sport, $date, int $promoter, string $location): ICompetition
     {
-        // TODO: Implement CreateCompetition() method.
+        return Competition::create([
+            'comp_name' => $name,
+            'comp_sport' => $sport,
+            'comp_date' => $date,
+            'comp_promoter' => $promoter,
+            'comp_location' => $location
+        ]);
     }
 
     /**
@@ -45,16 +59,16 @@ class CommonCrudService implements ICrudService
      */
     function FindCompById(int $id): ?ICompetition
     {
-        // TODO: Implement FindCompById() method.
+        return Competition::find($id);
     }
 
     /**
      * @param ISport $sport
      * @return IDistance[]
      */
-    function FindAllDistancesForSport(ISport $sport): array
+    function FindAllDistancesForSport(ISport $sport)
     {
-        // TODO: Implement FindAllDistancesForSport() method.
+        return Distance::where('sport_id', $sport->getSportId())->get();
     }
 
     /**
@@ -63,7 +77,12 @@ class CommonCrudService implements ICrudService
      */
     function AddDistanceForCompetition(ICompetition $competition, IDistance $distance): void
     {
-        // TODO: Implement AddDistanceForCompetition() method.
+        $cd = CompetitionsDistances::create(
+            [
+                'competition_id' => $competition->getCompId(),
+                'distance_id' => $distance->getDistanceId()
+            ]
+        );
     }
 
     /**
@@ -72,7 +91,7 @@ class CommonCrudService implements ICrudService
      */
     function FindDistanceById(int $id): ?IDistance
     {
-        // TODO: Implement FindDistanceById() method.
+        return Distance::find($id);
     }
 
     /**
@@ -81,25 +100,24 @@ class CommonCrudService implements ICrudService
      */
     function GetUserCompetitionInfo(IUser $user): array
     {
-        // TODO: Implement GetUserCompetitionInfo() method.
-    }
+        $user_competitions = DB::table('competitions')
+            ->join('results', 'results.result_competition', '=', 'competitions.comp_id')
+            ->join('competitions_distances', 'competitions_distances.competition_id', '=', 'competitions.comp_id')
+            ->join('distances', 'distances.distance_id', '=', 'competitions_distances.distance_id')
+            ->whereRaw('results.result_athlete = ? AND results.result_distance = distances.distance_id', [$user->getId()])
+            ->distinct()
+            ->get();
 
-    /**
-     * @param IUser $creator
-     * @return TrainingPlan|null
-     */
-    function FindTrainingPlanByCreator(IUser $creator): ?TrainingPlan
-    {
-        // TODO: Implement FindTrainingPlanByCreator() method.
+        return $user_competitions->toArray();
     }
 
     /**
      * @param int $count
      * @return ICompetition[]
      */
-    function GetMostRecentCompetitions(int $count): array
+    function GetMostRecentCompetitions(int $count)
     {
-        // TODO: Implement GetMostRecentCompetitions() method.
+        return Competition::orderBy('comp_date', 'desc')->take($count)->get();
     }
 
     /**
@@ -108,10 +126,21 @@ class CommonCrudService implements ICrudService
      * @param IDistance $distance
      * @param ISport $sport
      * @param int $time
+     * @return IResult
      */
-    function CreateResult(IUser $athlete, ICompetition $competition, IDistance $distance, ISport $sport, int $time): void
+    function CreateResult(IUser $athlete, ICompetition $competition, IDistance $distance, ISport $sport, int $time): IResult
     {
-        // TODO: Implement CreateResult() method.
+        return Result::create(
+            [
+                'result_athlete' => $athlete->getId(),
+                'result_competition' => $competition->getCompId(),
+                'result_distance' => $distance->getDistanceId(),
+                'result_sport' => $sport->getSportId(),
+                'result_time' => $time,
+                'disqualified' => 0,
+                'result_multisport' => null
+            ]
+        );
     }
 
     /**
@@ -120,6 +149,40 @@ class CommonCrudService implements ICrudService
      */
     function FindTeamById(int $id): ?ITeam
     {
-        // TODO: Implement FindTeamById() method.
+        return Team::find($id);
+    }
+
+    /**
+     * @param IUser $creator
+     * @return TrainingPlan[]
+     */
+    function FindTrainingPlansOfCreator(IUser $creator): array
+    {
+        return TrainingPlan::where('tp_creator', $creator->getId())->get()->toArray();
+    }
+
+    /**
+     * @param IUser $user
+     * @param ICompetition $competition
+     * @param IDistance $distance
+     * @return bool
+     */
+    public function checkIfUserAlreadyEnteredForComp(IUser $user, ICompetition $competition, IDistance $distance): bool
+    {
+        $existing_result = Result::where('result_athlete', $user->getId())
+            ->where('result_competition', $competition->getCompId())
+            ->where('result_distance', $distance->getDistanceId())
+            ->get();
+
+        return ($existing_result->isNotEmpty());
+    }
+
+    /**
+     * @param $id
+     * @return mixed
+     */
+    function FindResultById($id): Result
+    {
+        return Result::find($id);
     }
 }

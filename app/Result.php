@@ -187,9 +187,11 @@ class Result extends Model implements IResult
 
     /**
      * @param int $result_time
+     * @throws \Throwable
      */
     public function setResultTime(int $result_time)
     {
         $this->result_time = $result_time;
+        $this->saveOrFail();
     }
 }
