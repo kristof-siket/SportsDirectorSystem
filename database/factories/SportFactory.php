@@ -8,7 +8,7 @@
 
 $factory->define(App\Sport::class, function (Faker\Generator $faker) {
     return [
-        'sport_name' => $faker->colorName . $faker->countryISOAlpha3,
+        'sport_name' => $faker->unique()->colorName . $faker->countryISOAlpha3,
         'sport_desc' => $faker->sentence,
         'multisport' => false,
     ];

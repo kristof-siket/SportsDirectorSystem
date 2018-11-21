@@ -69,7 +69,7 @@ class CompetitionControllerTest extends TestCase
         $testDate = Carbon::create(2018, 6, 18, 12);
         Carbon::setTestNow($testDate);
 
-        $response = $this->actingAs($this->user)->call('POST', 'competitions',
+        $this->actingAs($this->user)->call('POST', 'competitions',
             ['comp_name' => 'Smthng', 'comp_sport' => 1, 'comp_date' => $testDate->format('Y-m-d H:i:s'), 'comp_location' => "London"]
         );
 
