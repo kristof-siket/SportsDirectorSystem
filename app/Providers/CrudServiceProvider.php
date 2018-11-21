@@ -7,6 +7,8 @@ use Illuminate\Support\ServiceProvider;
 
 class CrudServiceProvider extends ServiceProvider
 {
+    protected $defer = true; // The class will be only loaded when necessary!
+
     /**
      * Bootstrap the application services.
      *

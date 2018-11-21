@@ -20,7 +20,6 @@ class CompetitionsController extends Controller
         if (!\Auth::check()) {
             return redirect()->route('login');
         }
-
         $comps = $crudService->GetAllCompetitions();
 
         return view('competitions.index', ['competitions' => $comps]);
