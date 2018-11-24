@@ -71,6 +71,10 @@ class UsersController extends Controller
      */
     public function update(Request $request, User $user, ICrudService $crudService)
     {
+        if (!is_integer($request->input('user_team'))) {
+            return back();
+        }
+
         $user->setTeam($crudService->FindTeamById($request->input('user_team')));
         $user->save();
 
