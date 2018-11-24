@@ -29,6 +29,7 @@ class CompetitionControllerTest extends TestCase
     private $user;
 
     /**
+     * @group controller
      * @return void
      * @test
      */
@@ -63,31 +64,4 @@ class CompetitionControllerTest extends TestCase
     {
         $this->actingAs($this->user)->call('GET', 'competitions/create')->assertStatus(200);
     }
-
-    /**
-     * @return void
-     * @test
-     */
-//    public function test_competition_store()
-//    {
-//
-//        $testDate = Carbon::create(2018, 6, 18, 12);
-//        Carbon::setTestNow($testDate);
-//
-//        $this->actingAs($this->user)->call('POST', 'competitions',
-//            ['comp_name' => 'Smthng', 'comp_sport' => 1, 'comp_date' => $testDate->format('Y-m-d H:i:s'), 'comp_location' => "London"]
-//        );
-//
-//        $this->assertDatabaseHas('competitions',
-//           [
-//                'comp_id' => 1,
-//                'comp_name' => 'Smthng',
-//                'comp_location' => 'London',
-//                'comp_date' => $testDate->format('Y-m-d H:i:s'),
-//                'comp_promoter' => $this->user->getId(),
-//                'comp_sport' => 1,
-//                'created_at' => $testDate->format('Y-m-d H:i:s'),
-//                'updated_at' => $testDate->format('Y-m-d H:i:s'),
-//            ]);
-//    }
 }

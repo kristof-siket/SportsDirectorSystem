@@ -9,12 +9,12 @@
 namespace Tests\Unit\ModelTests\Eloquent;
 
 use App\Result;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Tests\TestCase;
 
 class ResultTest extends TestCase
 {
-    use RefreshDatabase;
+    use DatabaseMigrations;
 
     /**
      * @var $result Result

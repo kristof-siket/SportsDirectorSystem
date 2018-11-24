@@ -10,12 +10,12 @@ namespace Tests\Unit\ModelTests\Eloquent;
 
 
 use App\Sport;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Tests\TestCase;
 
 class SportTest extends TestCase
 {
-    use RefreshDatabase;
+    use DatabaseMigrations;
 
     /**
      * @var Sport $sport

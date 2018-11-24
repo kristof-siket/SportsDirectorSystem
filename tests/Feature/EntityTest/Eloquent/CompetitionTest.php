@@ -9,12 +9,12 @@
 namespace Tests\Unit\ModelTests\Eloquent;
 
 use App\Competition;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Tests\TestCase;
 
 class CompetitionTest extends TestCase
 {
-    use RefreshDatabase;
+    use DatabaseMigrations;
 
     /**
      * @var $competition Competition

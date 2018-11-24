@@ -13,13 +13,10 @@ use App\Services\Interfaces\IResultAnalyzer;
 use App\Services\Interfaces\ResultAnalyzerDataMapper;
 use App\Services\Repository\Result\ResultRepoDoctrine;
 use App\Services\ResultAnalyzerActiveRecord;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class ResultAnalyzerDataMapperTest extends TestCase
 {
-    use RefreshDatabase;
-
     /**
      * @var IResultAnalyzer $resultAnalyzerHelper
      */

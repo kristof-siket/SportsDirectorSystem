@@ -10,12 +10,12 @@ namespace Tests\Unit\ModelTests\Eloquent;
 
 
 use App\Distance;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Tests\TestCase;
 
 class DistanceTest extends TestCase
 {
-    use RefreshDatabase;
+    use DatabaseMigrations;
 
     /**
      * @var $distance Distance

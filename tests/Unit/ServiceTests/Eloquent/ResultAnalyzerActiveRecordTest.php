@@ -13,12 +13,12 @@ use App\Result;
 use App\Services\Interfaces\IResultAnalyzer;
 use App\Services\Repository\Result\ResultRepoEloquent;
 use App\Services\ResultAnalyzerActiveRecord;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Tests\TestCase;
 
 class ResultAnalyzerActiveRecordTest extends TestCase
 {
-    use RefreshDatabase;
+    use DatabaseMigrations;
 
     /**
      * @var $analyzerService IResultAnalyzer
