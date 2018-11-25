@@ -10,18 +10,26 @@ namespace App\Services\Repository\Result;
 
 
 use App\AnalyzerResult;
+use App\ModelInterfaces\ICompetition;
 use App\ModelInterfaces\IResult;
 use App\Result;
 
 class ResultRepoEloquent implements IResultRepository
 {
     /**
-     * @param $competition int
+     * @param $competition ICompetition
      * @return array
      */
     public function getCompetitionResults($competition)
     {
-        return Result::where( [ [ 'result_competition', '=', $competition ], [ 'result_time', '>', 0 ] ] )->get();
+        $this_results = Result::where('result_competition', $competition->getCompId())
+            ->orderBy('result_distance')
+            ->orderByRaw('result_time = 0')
+            ->orderBy('result_time', 'asc')
+            ->distinct('result_athlete')
+            ->get();
+
+        return $this_results;
     }
 
     /**

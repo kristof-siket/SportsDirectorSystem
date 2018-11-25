@@ -31,7 +31,7 @@ class Distance extends Model implements IDistance
 
     public function sport()
     {
-        return $this->belongsTo('App\Sport', 'distance_sport');
+        return $this->belongsTo('App\Sport', 'sport_id');
     }
 
     public function partsport()

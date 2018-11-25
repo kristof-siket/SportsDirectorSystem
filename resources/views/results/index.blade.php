@@ -47,7 +47,9 @@
                                                     {!! gmdate('H:i:s', $result->getResultTime()) !!}
                                                 @else
                                                     <div class="form-group form-group-sm form-inline">
-                                                        {!! Form::open(['route' => ['results.update', $result->getResultCompetition()->getCompId(), $result->getResultId()], 'method' => 'PUT']) !!}
+                                                        {!! Form::open(['route' => ['results.update', $result->getResultId()], 'method' => 'PUT']) !!}
+                                                        <input type="hidden" name="_method" value="PUT">
+                                                        {!! csrf_field() !!}
                                                         <input type="time" class="form-control " step="1"
                                                                name="result_time">
                                                         {!! Form::submit('Set time', ['class' => 'btn btn-primary btn-sm']); !!}

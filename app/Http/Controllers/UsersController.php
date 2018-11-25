@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\Interfaces\ICrudService;
 use App\User;
 use Illuminate\Http\Request;
 
@@ -63,13 +64,18 @@ class UsersController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\User  $user
+     * @param  \Illuminate\Http\Request $request
+     * @param  \App\User $user
+     * @param ICrudService $crudService
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, User $user)
+    public function update(Request $request, User $user, ICrudService $crudService)
     {
-        $user->team_id = $request->input('user_team');
+        if (!is_integer($request->input('user_team'))) {
+            return back();
+        }
+
+        $user->setTeam($crudService->FindTeamById($request->input('user_team')));
         $user->save();
 
         if ($user) {
@@ -77,16 +83,5 @@ class UsersController extends Controller
         }
 
         return redirect()->back();
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\User  $user
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(User $user)
-    {
-        //
     }
 }

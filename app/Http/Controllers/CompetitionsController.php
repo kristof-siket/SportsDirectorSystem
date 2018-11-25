@@ -3,32 +3,24 @@
 namespace App\Http\Controllers;
 
 use App\Competition;
-use App\CompetitionsDistances;
-use App\Distance;
-use App\ModelInterfaces\ICompetition;
+use App\Services\Interfaces\ICrudService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Input;
 
 class CompetitionsController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
+     * @param ICrudService $crudService
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(ICrudService $crudService)
     {
         if (!\Auth::check()) {
             return redirect()->route('login');
         }
-
-        /**
-         * @var $comps ICompetition
-         */
-        $comps = \DB::table('competitions')
-            ->orderBy('competitions.comp_date', 'desc')
-            ->get();
+        $comps = $crudService->GetAllCompetitions();
 
         return view('competitions.index', ['competitions' => $comps]);
     }
@@ -40,69 +32,83 @@ class CompetitionsController extends Controller
      */
     public function create()
     {
+        if (!\Auth::check()) {
+            return redirect()->route('login');
+        }
+
         return view('competitions.create');
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Http\Request $request
+     * @param ICrudService $crudService
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request, ICrudService $crudService)
     {
         if (!\Auth::check()) {
             return redirect()->route('login');
         }
-            $competition = Competition::create([
-                "comp_name" => $request->input('comp_name', 'Új verseny'),
-                "comp_sport" => $request->input('comp_sport'),
-                "comp_date" => $request->input('comp_date', new \DateTime('now')),
-                "comp_promoter" => \Auth::user()->id,
-                "comp_location" => $request->input('comp_location', 'Budapest'),
-            ]);
-            if ($competition) {
-                flash('Competition created successfully, now you can add distances to it!')->important();
-                return redirect()->route('competitions.addDistances', ['comp_id' => $competition->getCompId()]);
-            }
-            else {
-                flash('Competition creation was unsuccessful, please, fill the input fields correctly!')->error();
-                return back();
-            }
+
+        $competition = $crudService->CreateCompetition(
+            $request->input('comp_name', 'Új verseny'),
+            $request->input('comp_sport'),
+            $request->input('comp_date', new \DateTime('now')),
+            \Auth::user()->id,
+            $request->input('comp_location', 'Budapest')
+        );
+
+        if ($competition) {
+            flash('Competition created successfully, now you can add distances to it!')->important();
+            return redirect()->route('competitions.addDistances', ['comp_id' => $competition->getCompId()]);
+        } else {
+            flash('Competition creation was unsuccessful, please, fill the input fields correctly!')->error();
+            return back();
         }
+    }
 
     /**
      * Display the form for adding distances to recently created event.
      *
      * @param $comp_id int
-     * @param $request Request
+     * @param ICrudService $crudService
      * @return Response
      */
-    public function addDistances($comp_id, Request $request)
+    public function addDistances($comp_id, ICrudService $crudService)
     {
-
-        $this_comp = Competition::find($comp_id);
-        return view('competitions.add_distances', ['comp' => $this_comp,
-            'distances' => Distance::where('sport_id', $this_comp->comp_sport)->get()]);
-    }
-
-    public function storeDistances(Request $request, $comp_id)
-    {
-        $comp_distances = Input::get('comp_distances');
-        $competition = Competition::find($comp_id);
-
         if (!\Auth::check()) {
             return redirect()->route('login');
         }
 
-        foreach ($comp_distances as $comp_distance) {
-            CompetitionsDistances::create([
-                'competition_id' => $competition->comp_id,
-                'distance_id' => $comp_distance
-            ]);
+        $this_comp = $crudService->FindCompById($comp_id);
+        $distances = $crudService->FindAllDistancesForSport($this_comp->getCompSport());
+
+        return view('competitions.add_distances', ['comp' => $this_comp, 'distances' => $distances]);
+    }
+
+    /**
+     * @param Request $request
+     * @param $comp_id
+     * @param ICrudService $crudService
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function storeDistances(Request $request, $comp_id, ICrudService $crudService)
+    {
+        if (!\Auth::check()) {
+            return redirect()->route('login');
         }
 
-        return redirect()->route('competitions.show', ['comp_id' => $competition->comp_id]);
+        $comp_distances = $request->input('comp_distances');
+        $competition = $crudService->FindCompById($comp_id);
+
+        foreach ($comp_distances as $comp_distance) {
+            $dist = $crudService->FindDistanceById($comp_distance);
+            $crudService->AddDistanceForCompetition($competition, $dist);
+        }
+
+        return redirect()->route('competitions.show', ['comp_id' => $competition->getCompId()]);
     }
 
     /**
@@ -113,40 +119,9 @@ class CompetitionsController extends Controller
      */
     public function show(Competition $competition)
     {
+        if (!\Auth::check()) {
+            return redirect()->route('login');
+        }
         return view('competitions.details', ['competition' => $competition]);
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Competition  $competition
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Competition $competition)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Competition  $competition
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, Competition $competition)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Competition  $competition
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Competition $competition)
-    {
-        //
     }
 }
