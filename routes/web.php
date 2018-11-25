@@ -22,8 +22,9 @@ Route::get('/runalyzer', 'RunalyzerController@index')->name('runalyzer.index');
  * Routes defined for models (automatic crud methods, url generation, etc.)
  */
 Route::resource('competitions', 'CompetitionsController', ['parameters' => ['id' => 'comp_id']]);
-Route::resource('training_plans', 'TrainingPlansController');
 Route::resource('users', 'UsersController');
+Route::get('training_plans/export', 'TrainingPlansController@export')->name('training_plans.export');
+Route::get('training_plans', 'TrainingPlansController@index')->name('training_plans.index');
 
 /*
  * "Resource-like" routes to define some special actions

@@ -20,6 +20,7 @@ use App\ModelInterfaces\ITeam;
 use App\ModelInterfaces\IUser;
 use App\Result;
 use App\Services\Interfaces\ICrudService;
+use App\Sport;
 use App\Team;
 use App\TrainingPlan;
 use DB;
@@ -184,5 +185,13 @@ class CommonCrudService implements ICrudService
     function FindResultById($id): Result
     {
         return Result::find($id);
+    }
+
+    /**
+     * @return ISport[]
+     */
+    function GetAllSports()
+    {
+        return Sport::all();
     }
 }

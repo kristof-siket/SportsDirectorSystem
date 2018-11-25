@@ -31,6 +31,11 @@ interface ICrudService
     function GetAllCompetitions();
 
     /**
+     * @return ISport[]
+     */
+    function GetAllSports();
+
+    /**
      * @param string $name
      * @param int $sport
      * @param $date
