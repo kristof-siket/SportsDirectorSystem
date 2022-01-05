@@ -78,7 +78,7 @@ class Competition extends Model implements ICompetition
      */
     public function getCompSport()
     {
-        return $this->comp_sport;
+        return $this->sport;
     }
 
     /**

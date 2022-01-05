@@ -39,8 +39,6 @@ class ResultAnalyzerActiveRecord implements IResultAnalyzer
          * @var $result IAnalyzerResult[]
          */
         $results = AnalyzerResult::where('aresult_result', $result->getResultId())->get();
-        dump($results);
-
         foreach ($results as $result) {
             AnalyzerResult::destroy($result->getAresultId());
         }

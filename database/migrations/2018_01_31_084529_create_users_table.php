@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class CreateUsersTable extends Migration
 {
@@ -31,7 +31,7 @@ class CreateUsersTable extends Migration
 
         if (Schema::hasTable('teams')) {
             Schema::table('users', function (Blueprint $table) {
-                $table->integer('team_id')->unsigned();
+                $table->integer('team_id')->unsigned()->nullable();
 
                 $table->foreign('team_id')->references('team_id')->on('teams');
             });
